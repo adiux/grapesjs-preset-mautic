@@ -4,7 +4,7 @@ import grapesjsnewsletter from 'grapesjs-preset-newsletter';
 import grapesjswebpage from 'grapesjs-preset-webpage';
 import grapesjspostcss from 'grapesjs-parser-postcss';
 // import grapesjsmautic from 'grapesjs-preset-mautic';
-import grapesjsmautic from '../../../../../../grapesjs-preset-mautic/src';
+import grapesjsmautic from '../../../../grapesjs-preset-mautic/src';
 import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 import contentService from 'grapesjs-preset-mautic/dist/content.service';
 
