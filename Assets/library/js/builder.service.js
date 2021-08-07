@@ -67,17 +67,18 @@ export default class BuilderService {
       keymaps.removeAll();
 
       // Set up dynamic content editors if present
-      Mautic.setDynamicContentEditors(Mautic.getBuilderContainer());
+      if (Mautic.getBuilderContainer) {
+        Mautic.setDynamicContentEditors(Mautic.getBuilderContainer());
+        // When a new Dynamic Content filter (tab) is added, we want to turn the editor into CKEditor.
+        Mautic.dynamicContentAddNewFilterListener((textarea) => {
+          Mautic.ConvertFieldToCkeditor(textarea, {});
+        });
 
-      // When a new Dynamic Content filter (tab) is added, we want to turn the editor into CKEditor.
-      Mautic.dynamicContentAddNewFilterListener((textarea) => {
-        Mautic.ConvertFieldToCkeditor(textarea, {});
-      });
-
-      // When a new Dynamic Content item (slot) is added, we want to turn the editor into CKEditor.
-      Mautic.dynamicContentAddNewItemListener((textarea) => {
-        Mautic.ConvertFieldToCkeditor(textarea, {});
-      });
+        // When a new Dynamic Content item (slot) is added, we want to turn the editor into CKEditor.
+        Mautic.dynamicContentAddNewItemListener((textarea) => {
+          Mautic.ConvertFieldToCkeditor(textarea, {});
+        });
+      }
     });
 
     this.editor.on('modal:close', () => {
@@ -91,7 +92,7 @@ export default class BuilderService {
 
       // Destroy Dynamic Content editors
       // eslint-disable-next-line no-undef
-      if (CKEDITOR && CKEDITOR.instances) {
+      if (CKEDITOR) {
         // eslint-disable-next-line no-undef
         for (const name of Object.keys(CKEDITOR.instances)) {
           if (name.includes('dynamicContent')) {
