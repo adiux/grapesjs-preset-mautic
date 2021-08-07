@@ -91,12 +91,14 @@ export default class BuilderService {
 
       // Destroy Dynamic Content editors
       // eslint-disable-next-line no-undef
-      for (const name of Object.keys(CKEDITOR.instances)) {
-        if (name.includes('dynamicContent')) {
-          // eslint-disable-next-line no-console
-          console.log(`Destroying Dynamic Content editor: ${name}`);
-          // eslint-disable-next-line no-undef
-          CKEDITOR.instances[name].destroy(true);
+      if (CKEDITOR && CKEDITOR.instances) {
+        for (const name of Object.keys(CKEDITOR.instances)) {
+          if (name.includes('dynamicContent')) {
+            // eslint-disable-next-line no-console
+            console.log(`Destroying Dynamic Content editor: ${name}`);
+            // eslint-disable-next-line no-undef
+            CKEDITOR.instances[name].destroy(true);
+          }
         }
       }
     });
