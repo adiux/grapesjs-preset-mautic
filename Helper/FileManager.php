@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MauticPlugin\GrapesJsBuilderBundle\Helper;
 
+use Mautic\CacheBundle\Cache\CacheProvider;
 use Mautic\CoreBundle\Exception\FileUploadException;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\FileUploader;
@@ -15,6 +16,8 @@ use Symfony\Component\Finder\Finder;
 class FileManager
 {
     const GRAPESJS_IMAGES_DIRECTORY = '';
+
+    const CACHE_TTL = 86400; // 1 day
 
     /**
      * @var FileUploader
@@ -32,16 +35,23 @@ class FileManager
     private $pathsHelper;
 
     /**
+     * @var CacheProvider
+     */
+    private $cacheProvider;
+
+    /**
      * FileManager constructor.
      */
     public function __construct(
         FileUploader $fileUploader,
         CoreParametersHelper $coreParametersHelper,
-        PathsHelper $pathsHelper
+        PathsHelper $pathsHelper,
+        CacheProvider $cacheProvider
     ) {
         $this->fileUploader         = $fileUploader;
         $this->coreParametersHelper = $coreParametersHelper;
         $this->pathsHelper          = $pathsHelper;
+        $this->cacheProvider = $cacheProvider;
     }
 
     /**
@@ -64,6 +74,8 @@ class FileManager
             }
         }
 
+        $this->deleteCache($this->getCacheKey());
+
         return $uploadedFiles;
     }
 
@@ -73,6 +85,7 @@ class FileManager
     public function deleteFile($fileName)
     {
         $this->fileUploader->delete($this->getCompleteFilePath($fileName));
+        $this->deleteCache($this->getCacheKey());
     }
 
     /**
@@ -129,6 +142,14 @@ class FileManager
      */
     public function getImages()
     {
+        $cacheAdapter = $this->cacheProvider->getCacheAdapter();
+
+        $cacheItem = $cacheAdapter->getItem($this->getCacheKey());
+
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
+        }
+
         $files      = [];
         $uploadDir  = $this->getUploadDir();
 
@@ -163,6 +184,27 @@ class FileManager
             }
         }
 
+        $cacheItem->expiresAfter(self::CACHE_TTL);
+        $cacheItem->set($files);
+        $cacheAdapter->save($cacheItem);
+
         return $files;
+    }
+
+    private function getCacheKey()
+    {
+        return 'grapesjs_' . md5($this->getUploadDir());
+    }
+
+    /**
+     * @param string $key
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    private function deleteCache($key)
+    {
+        $cacheAdapter = $this->cacheProvider->getCacheAdapter();
+        if ($cacheAdapter->hasItem($key)) {
+            $cacheAdapter->deleteItem($key);
+        }
     }
 }

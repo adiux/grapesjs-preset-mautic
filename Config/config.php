@@ -77,6 +77,7 @@ return [
                     'mautic.helper.file_uploader',
                     'mautic.helper.core_parameters',
                     'mautic.helper.paths',
+                    'mautic.cache.provider',
                 ],
             ],
         ],
