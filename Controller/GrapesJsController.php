@@ -10,6 +10,7 @@ use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\PageBundle\Entity\Page;
+use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Response;
 
 class GrapesJsController extends CommonController
@@ -17,10 +18,15 @@ class GrapesJsController extends CommonController
     const OBJECT_TYPE = ['email', 'page'];
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * Activate the custom builder.
      *
      * @param string $objectType
-     * @param int $objectId
+     * @param int    $objectId
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -29,17 +35,18 @@ class GrapesJsController extends CommonController
         if (!in_array($objectType, self::OBJECT_TYPE)) {
             throw new \Exception('Object not authorized to load custom builder', Response::HTTP_CONFLICT);
         }
+        $this->logger     = $this->get('monolog.logger.mautic');
 
         /** @var \Mautic\EmailBundle\Model\EmailModel|\Mautic\PageBundle\Model\PageModel $model */
         $model      = $this->getModel($objectType);
         $aclToCheck = 'email:emails:';
 
-        if ($objectType === 'page') {
+        if ('page' === $objectType) {
             $aclToCheck = 'page:pages:';
         }
 
         //permission check
-        if (strpos($objectId, 'new') !== false) {
+        if (false !== strpos($objectId, 'new')) {
             $isNew = true;
 
             if (!$this->get('mautic.security')->isGranted($aclToCheck.'create')) {
@@ -54,7 +61,7 @@ class GrapesJsController extends CommonController
             $entity = $model->getEntity($objectId);
             $isNew  = false;
 
-            if ($entity == null
+            if (null == $entity
                 || !$this->get('mautic.security')->hasEntityAccess(
                     $aclToCheck.'viewown',
                     $aclToCheck.'viewother',
@@ -68,12 +75,18 @@ class GrapesJsController extends CommonController
         $slots        = [];
         $type         = 'html';
         $template     = InputHelper::clean($this->request->query->get('template'));
+        if (!$template) {
+            $this->logger->warn('Grapesjs: no template in query');
+
+            return $this->json(false);
+        }
         $templateName = ':'.$template.':'.$objectType;
         $content      = $entity->getContent();
         /** @var ThemeHelper $themeHelper */
         $themeHelper  = $this->get('mautic.helper.theme');
 
         // Check for MJML template
+        // @deprecated - use mjml directly in email.html.twig
         if ($logicalName = $this->checkForMjmlTemplate($templateName.'.mjml.twig')) {
             $type        = 'mjml';
         } else {
@@ -89,7 +102,7 @@ class GrapesJsController extends CommonController
                 $entity->setContent($content);
             }
 
-            if ($objectType === 'page') {
+            if ('page' === $objectType) {
                 $this->processPageSlots($slots, $entity);
             } else {
                 $this->processEmailSlots($slots, $entity);
@@ -111,8 +124,12 @@ class GrapesJsController extends CommonController
             ]
         );
 
-        $renderedTemplateHtml = ($type === 'html') ? $renderedTemplate : '';
-        $renderedTemplateMjml = ($type === 'mjml') ? $renderedTemplate : '';
+        if (false !== strpos($renderedTemplate, '<mjml>')) {
+            $type = 'mjml';
+        }
+
+        $renderedTemplateHtml = ('html' === $type) ? $renderedTemplate : '';
+        $renderedTemplateMjml = ('mjml' === $type) ? $renderedTemplate : '';
 
         return $this->render(
             'GrapesJsBuilderBundle:Builder:template.html.php',
@@ -190,7 +207,7 @@ class GrapesJsController extends CommonController
 
             $value = isset($content[$slot]) ? $content[$slot] : '';
 
-            if ($slotConfig['type'] == 'slideshow') {
+            if ('slideshow' == $slotConfig['type']) {
                 if (isset($content[$slot])) {
                     $options = json_decode($content[$slot], true);
                 } else {

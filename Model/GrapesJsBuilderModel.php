@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MauticPlugin\GrapesJsBuilderBundle\Model;
 
-use Mautic\CoreBundle\Helper\ArrayHelper;
 use Mautic\CoreBundle\Model\AbstractCommonModel;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Model\EmailModel;
@@ -24,27 +23,19 @@ class GrapesJsBuilderModel extends AbstractCommonModel
      */
     private $emailModel;
 
-    /**
-     * GrapesJsBuilderModel constructor.
-     *
-     * @param RequestStack $requestStack
-     * @param EmailModel   $emailModel
-     */
     public function __construct(RequestStack $requestStack, EmailModel $emailModel)
     {
         $this->requestStack = $requestStack;
-        $this->emailModel = $emailModel;
+        $this->emailModel   = $emailModel;
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return GrapesJsBuilderRepository
      */
     public function getRepository()
     {
         /** @var GrapesJsBuilderRepository $repository */
-        $repository = $this->em->getRepository('GrapesJsBuilderBundle:GrapesJsBuilder');
+        $repository = $this->em->getRepository(GrapesJsBuilder::class);
 
         $repository->setTranslator($this->translator);
 
@@ -53,8 +44,6 @@ class GrapesJsBuilderModel extends AbstractCommonModel
 
     /**
      * Add or edit email settings entity based on request.
-     *
-     * @param Email $email
      */
     public function addOrEditEntity(Email $email)
     {
@@ -71,12 +60,19 @@ class GrapesJsBuilderModel extends AbstractCommonModel
             if (isset($data['customMjml'])) {
                 $grapesJsBuilder->setCustomMjml($data['customMjml']);
             }
+
+            $this->getRepository()->saveEntity($grapesJsBuilder);
+
+            $customHtml = $this->requestStack->getCurrentRequest()->get('emailform')['customHtml'] ?? null;
+            $email->setCustomHtml($customHtml);
+            $this->emailModel->getRepository()->saveEntity($email);
         }
+    }
 
-        $this->getRepository()->saveEntity($grapesJsBuilder);
-
-        $customHtml = ArrayHelper::getValue('customHtml',$this->requestStack->getCurrentRequest()->get('emailform'));
-        $email->setCustomHtml($customHtml);
-        $this->emailModel->getRepository()->saveEntity($email);
+    public function getGrapesJsFromEmailId(?int $emailId)
+    {
+        if ($email = $this->emailModel->getEntity($emailId)) {
+            return $this->getRepository()->findOneBy(['email' => $email]);
+        }
     }
 }
