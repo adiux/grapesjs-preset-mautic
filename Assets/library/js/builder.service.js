@@ -92,7 +92,7 @@ export default class BuilderService {
 
       // Destroy Dynamic Content editors
       // eslint-disable-next-line no-undef
-      if (CKEDITOR) {
+      if (typeof CKEDITOR !== 'undefined') {
         // eslint-disable-next-line no-undef
         for (const name of Object.keys(CKEDITOR.instances)) {
           if (name.includes('dynamicContent')) {
