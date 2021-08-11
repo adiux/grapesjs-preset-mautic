@@ -3,12 +3,13 @@ import grapesjsmjml from 'grapesjs-mjml';
 import grapesjsnewsletter from 'grapesjs-preset-newsletter';
 import grapesjswebpage from 'grapesjs-preset-webpage';
 import grapesjspostcss from 'grapesjs-parser-postcss';
-// import grapesjsmautic from 'grapesjs-preset-mautic';
-import grapesjsmautic from '../../../../grapesjs-preset-mautic/src';
+import grapesjsmautic from 'grapesjs-preset-mautic';
+// import grapesjsmautic from '../../../../grapesjs-preset-mautic/src';
 import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 import contentService from 'grapesjs-preset-mautic/dist/content.service';
 
 import CodeModeButton from './codeMode/codeMode.button';
+import ReusableDynamicContent from './reusableDynamicContent/reusableDynamicContent.block';
 
 export default class BuilderService {
   editor;
@@ -138,6 +139,8 @@ export default class BuilderService {
     const codeModeButton = new CodeModeButton(this.editor);
     codeModeButton.addCommand();
     codeModeButton.addButton();
+    const reusableDynamicContent = new ReusableDynamicContent(this.editor);
+    reusableDynamicContent.addReusableDynamicContentBlock();
 
     this.setListeners();
   }
