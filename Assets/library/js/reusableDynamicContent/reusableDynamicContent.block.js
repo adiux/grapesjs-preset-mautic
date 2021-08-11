@@ -1,5 +1,3 @@
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 export default class ReusableDynamicContentBlock {
     editor;
 
@@ -8,12 +6,6 @@ export default class ReusableDynamicContentBlock {
     blockManager;
 
     constructor(editor, opts = {}) {
-        _defineProperty(this, "editor", void 0);
-
-        _defineProperty(this, "opts", void 0);
-
-        _defineProperty(this, "blockManager", void 0);
-
         this.editor = editor;
         this.opts = opts;
         this.blockManager = this.editor.BlockManager;
