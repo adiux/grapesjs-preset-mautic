@@ -3,10 +3,13 @@ import grapesjsmjml from 'grapesjs-mjml';
 import grapesjsnewsletter from 'grapesjs-preset-newsletter';
 import grapesjswebpage from 'grapesjs-preset-webpage';
 import grapesjspostcss from 'grapesjs-parser-postcss';
-import grapesjsmautic from 'grapesjs-preset-mautic';
-// import grapesjsmautic from '../../../../grapesjs-preset-mautic/src';
-import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 import contentService from 'grapesjs-preset-mautic/dist/content.service';
+import grapesjsmautic from 'grapesjs-preset-mautic';
+import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
+// for local dev
+// import contentService from '../../../../../../grapesjs-preset-mautic/src/content.service';
+// import grapesjsmautic from '../../../../../../grapesjs-preset-mautic/src';
+// import mjmlService from '../../../../../../grapesjs-preset-mautic/src/mjml/mjml.service';
 
 import CodeModeButton from './codeMode/codeMode.button';
 import ReusableDynamicContent from './reusableDynamicContent/reusableDynamicContent.block';
@@ -66,20 +69,6 @@ export default class BuilderService {
 
       // Remove keyboard shortcuts to prevent launch behind popup
       keymaps.removeAll();
-
-      // Set up dynamic content editors if present
-      if (Mautic.getBuilderContainer) {
-        Mautic.setDynamicContentEditors(Mautic.getBuilderContainer());
-        // When a new Dynamic Content filter (tab) is added, we want to turn the editor into CKEditor.
-        Mautic.dynamicContentAddNewFilterListener((textarea) => {
-          Mautic.ConvertFieldToCkeditor(textarea, {});
-        });
-
-        // When a new Dynamic Content item (slot) is added, we want to turn the editor into CKEditor.
-        Mautic.dynamicContentAddNewItemListener((textarea) => {
-          Mautic.ConvertFieldToCkeditor(textarea, {});
-        });
-      }
     });
 
     this.editor.on('modal:close', () => {
@@ -90,20 +79,6 @@ export default class BuilderService {
         keymaps.add(shortcut.id, shortcut.keys, shortcut.handler);
         return keymaps;
       });
-
-      // Destroy Dynamic Content editors
-      // eslint-disable-next-line no-undef
-      if (typeof CKEDITOR !== 'undefined') {
-        // eslint-disable-next-line no-undef
-        for (const name of Object.keys(CKEDITOR.instances)) {
-          if (name.includes('dynamicContent')) {
-            // eslint-disable-next-line no-console
-            console.log(`Destroying Dynamic Content editor: ${name}`);
-            // eslint-disable-next-line no-undef
-            CKEDITOR.instances[name].destroy(true);
-          }
-        }
-      }
     });
 
     this.editor.on('asset:remove', (response) => {
