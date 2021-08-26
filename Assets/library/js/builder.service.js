@@ -6,6 +6,7 @@ import grapesjspostcss from 'grapesjs-parser-postcss';
 import contentService from 'grapesjs-preset-mautic/dist/content.service';
 import grapesjsmautic from 'grapesjs-preset-mautic';
 import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
+<<<<<<< HEAD
 // for local dev
 // import contentService from '../../../../../../grapesjs-preset-mautic/src/content.service';
 // import grapesjsmautic from '../../../../../../grapesjs-preset-mautic/src';
@@ -17,6 +18,20 @@ import ReusableDynamicContent from './reusableDynamicContent/reusableDynamicCont
 export default class BuilderService {
   editor;
 
+=======
+import 'grapesjs-plugin-ckeditor';
+
+// for local dev
+// import contentService from '../../../../../../grapesjs-preset-mautic/src/content.service';
+// import grapesjsmautic from '../../../../../../grapesjs-preset-mautic/src';
+// import mjmlService from '../../../../../../grapesjs-preset-mautic/src/mjml/mjml.service';
+
+import CodeModeButton from './codeMode/codeMode.button';
+
+export default class BuilderService {
+  editor;
+
+>>>>>>> features
   assets;
 
   uploadPath;
@@ -114,8 +129,11 @@ export default class BuilderService {
     const codeModeButton = new CodeModeButton(this.editor);
     codeModeButton.addCommand();
     codeModeButton.addButton();
+<<<<<<< HEAD
     const reusableDynamicContent = new ReusableDynamicContent(this.editor);
     reusableDynamicContent.addReusableDynamicContentBlock();
+=======
+>>>>>>> features
 
     this.setListeners();
   }
@@ -126,6 +144,26 @@ export default class BuilderService {
     };
   }
 
+<<<<<<< HEAD
+=======
+  static getCkeConf() {
+    return {
+      options: {
+        language: 'en',
+        toolbar: [
+          { name: 'links', items: ['Link', 'Unlink'] },
+          { name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat'] },
+          { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-'] },
+          { name: 'colors', items: ['TextColor', 'BGColor'] },
+          { name: 'document', items: ['Source'] },
+          { name: 'insert', items: ['SpecialChar'] },
+        ],
+        extraPlugins: ['sharedspace', 'colorbutton'],
+      },
+    };
+  }
+
+>>>>>>> features
   /**
    * Initialize the builder in the landingapge mode
    */
@@ -144,12 +182,16 @@ export default class BuilderService {
       styleManager: {
         clearProperties: true, // Temp fix https://github.com/artf/grapesjs-preset-webpage/issues/27
       },
-      plugins: [grapesjswebpage, grapesjspostcss, grapesjsmautic],
+      plugins: [grapesjswebpage, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
       pluginsOpts: {
         [grapesjswebpage]: {
           formsOpts: false,
         },
         grapesjsmautic: BuilderService.getMauticConf('page-html'),
+<<<<<<< HEAD
+=======
+        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+>>>>>>> features
       },
     });
 
@@ -168,10 +210,18 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
+<<<<<<< HEAD
       plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic],
       pluginsOpts: {
         grapesjsmjml: {},
         grapesjsmautic: BuilderService.getMauticConf('email-mjml'),
+=======
+      plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
+      pluginsOpts: {
+        grapesjsmjml: {},
+        grapesjsmautic: BuilderService.getMauticConf('email-mjml'),
+        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+>>>>>>> features
       },
     });
 
@@ -196,10 +246,18 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
+<<<<<<< HEAD
       plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic],
       pluginsOpts: {
         grapesjsnewsletter: {},
         grapesjsmautic: BuilderService.getMauticConf('email-html'),
+=======
+      plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
+      pluginsOpts: {
+        grapesjsnewsletter: {},
+        grapesjsmautic: BuilderService.getMauticConf('email-html'),
+        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+>>>>>>> features
       },
     });
 
@@ -253,6 +311,9 @@ export default class BuilderService {
     };
   }
 
+  getEditor() {
+    return this.editor;
+  }
   /**
    * Generate assets list from GrapesJs
    */

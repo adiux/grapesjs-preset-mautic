@@ -6,13 +6,21 @@
   "scripts": {
     "build": "parcel build Assets/library/js/builder.js --out-dir Assets/library/js/dist --public-url ./",
     "build-dev": "NODE_ENV=development parcel build Assets/library/js/builder.js --out-dir Assets/library/js/dist --public-url ./ --no-minify ",
+<<<<<<< HEAD
+=======
+    "dev": "NODE_ENV=development parcel watch Assets/library/js/* --out-dir Assets/library/js/dist --public-url /plugins/GrapesJsBuilderBundle/Assets/library/js/dist --hmr-hostname localhost",
+>>>>>>> features
     "lint": "eslint Assets/library/js/",
     "prettier": "node_modules/.bin/prettier -w Assets/library/js/",
     "prettier-check": "node_modules/.bin/prettier -c Assets/library/js/",
     "start-helloWorld": "parcel Demo/helloWorld/index.html",
     "start-mautic-full": "cp -r Demo/data dist && parcel Demo/mautic/full.html",
     "start-mautic": "cp -r Demo/data dist && parcel Demo/mautic/index.html",
+<<<<<<< HEAD
     "update-mautic-preset": "rm -r node_modules/grapesjs-preset-mautic && npm install mautic/grapesjs-preset-mautic#master"
+=======
+    "update-mautic-preset": "rm -r node_modules/grapesjs-preset-mautic && npm install mautic/grapesjs-preset-mautic#main"
+>>>>>>> features
   },
   "repository": {
     "type": "git",
@@ -28,7 +36,12 @@
     "grapesjs": "^0.17.3",
     "grapesjs-mjml": "^0.5.4",
     "grapesjs-parser-postcss": "^0.1.1",
+<<<<<<< HEAD
     "grapesjs-preset-mautic": "github:mautic/grapesjs-preset-mautic#master",
+=======
+    "grapesjs-plugin-ckeditor": "^0.0.10",
+    "grapesjs-preset-mautic": "github:mautic/grapesjs-preset-mautic#main",
+>>>>>>> features
     "grapesjs-preset-newsletter": "^0.2.21",
     "grapesjs-preset-webpage": "^0.1.11"
   },
