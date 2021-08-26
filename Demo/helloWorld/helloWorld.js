@@ -2,10 +2,7 @@
 /* eslint-disable no-unused-expressions */
 import 'grapesjs/dist/css/grapes.min.css';
 import grapesjs from 'grapesjs';
-<<<<<<< HEAD
-=======
 import 'grapesjs-plugin-ckeditor';
->>>>>>> features
 
 
 const editor = grapesjs.init({
@@ -13,14 +10,10 @@ const editor = grapesjs.init({
   container: '#gjs',
   height: '100%',
   avoidInlineStyle: false,
-<<<<<<< HEAD
-  plugins: [],
-=======
   plugins: ['gjs-plugin-ckeditor'],
   pluginsOpts: {
     'gjs-plugin-ckeditor': {}
   }
->>>>>>> features
 });
 
 // add custom fonts options on editor's font list
