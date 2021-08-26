@@ -6,7 +6,7 @@ import grapesjspostcss from 'grapesjs-parser-postcss';
 import contentService from 'grapesjs-preset-mautic/dist/content.service';
 import grapesjsmautic from 'grapesjs-preset-mautic';
 import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
-import 'grapesjs-plugin-ckeditor';
+// import 'grapesjs-plugin-ckeditor';
 
 // for local dev
 // import contentService from '../../../../../../grapesjs-preset-mautic/src/content.service';
@@ -160,13 +160,13 @@ export default class BuilderService {
       styleManager: {
         clearProperties: true, // Temp fix https://github.com/artf/grapesjs-preset-webpage/issues/27
       },
-      plugins: [grapesjswebpage, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
+      plugins: [grapesjswebpage, grapesjspostcss, grapesjsmautic],
       pluginsOpts: {
         [grapesjswebpage]: {
           formsOpts: false,
         },
         grapesjsmautic: BuilderService.getMauticConf('page-html'),
-        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+        // 'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
       },
     });
 
@@ -185,11 +185,11 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
-      plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
+      plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic],
       pluginsOpts: {
         grapesjsmjml: {},
         grapesjsmautic: BuilderService.getMauticConf('email-mjml'),
-        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+        // 'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
       },
     });
 
@@ -214,11 +214,11 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
-      plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic, 'gjs-plugin-ckeditor'],
+      plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic],
       pluginsOpts: {
         grapesjsnewsletter: {},
         grapesjsmautic: BuilderService.getMauticConf('email-html'),
-        'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
+        // 'gjs-plugin-ckeditor': BuilderService.getCkeConf(),
       },
     });
 
