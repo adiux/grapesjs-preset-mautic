@@ -9,13 +9,13 @@ $fontColor: #000; /* l: #d8d7db */
 $fontColorActive: #e63312;
 
 $mainDkColor: #eff0f1; // e.g. for form fields
-$mainDklColor: #e9f0fe; //e.g. box titlebar, but also inside for the properties box
+$mainDklColor: #283e4c; //e.g. box titlebar, but also inside for the properties box
 $mainLhColor: #eff0f1; // e.g. hover for tooltip RTE
 $mainLhlColor: black; // controls of the labels
 $fontColorDk: pink; //e.g. ???
 $colorBlue: #283e4c;
 $colorRed: #e63312;
-$colorYell: #ffe1a8;
+$colorYell: #ff9f1c;
 $colorGreen: #0a9d77;
 $tagBg: $colorGreen;
 $secColor: $tagBg;
@@ -28,7 +28,7 @@ $leftWidth: 15%;
 
 /* Color Helpers */
 $colorHighlight: $colorBlue;
-$colorWarn: $colorYell;
+$colorWarn: $colorRed;
 
 // Parcel workaround: https://github.com/parcel-bundler/parcel/issues/39
 // @import url(node_modules/grapesjs/src/styles/scss/main.scss);
@@ -39,6 +39,7 @@ $colorWarn: $colorYell;
 
 // tag background color
 .gjs-clm-tag {
+  color: white;
   background-color: $tagBg;
 }
 
@@ -61,11 +62,31 @@ $colorWarn: $colorYell;
     }
   }
 }
-// remove the background color, otherwise it would be the same as the titlebar
+// manually set the font color of the properties titlebar
+.gjs-title,
+.gjs-sm-title {
+  color: white;
+}
+// remove the background color, otherwise it would be the same as the properties titlebar
 .gjs-sm-sector .gjs-sm-field.gjs-sm-composite {
   background-color: transparent;
 }
 // default it is mainDkColor
 .#{$app-prefix}editor-cont ::-webkit-scrollbar-track {
   background: #a7aeb4;
+}
+
+// Code and FileManager
+.gjs-btn-prim {
+  margin-top: 10px;
+  padding: 10px;
+  &.gjs-btn-code-edit {
+    background-color: $colorGreen;
+    color: #fff;
+  }
+  &.gjs-btn-code-cancel {
+    margin-left: 10px;
+    background-color: transparent;
+    display: none;
+  }
 }
