@@ -9,11 +9,11 @@ $fontColor: #000; /* l: #d8d7db */
 $fontColorActive: #e63312;
 
 $mainDkColor: #eff0f1; // e.g. for form fields
-$mainDklColor: #cfe7e1; //e.g. box titlebar, but also inside for the properties box
+$mainDklColor: #e9f0fe; //e.g. box titlebar, but also inside for the properties box
 $mainLhColor: #eff0f1; // e.g. hover for tooltip RTE
 $mainLhlColor: black; // controls of the labels
 $fontColorDk: pink; //e.g. ???
-$colorBlue: #3b97e3;
+$colorBlue: #283e4c;
 $colorRed: #e63312;
 $colorYell: #ffe1a8;
 $colorGreen: #0a9d77;
@@ -48,11 +48,17 @@ $colorWarn: $colorYell;
 }
 
 // clearly mark active toolbar buttons
-.gjs-pn-btn.gjs-pn-active {
-  background-color: $mainDkColor;
-  box-shadow: none;
-  &.gjs-four-color {
-    color: inherit;
+.gjs-pn-btn {
+  &:hover {
+    color: $colorRed;
+  }
+  &.gjs-pn-active {
+    background-color: $mainDkColor;
+    cursor: default;
+    box-shadow: none;
+    &.gjs-four-color {
+      color: inherit;
+    }
   }
 }
 // remove the background color, otherwise it would be the same as the titlebar
