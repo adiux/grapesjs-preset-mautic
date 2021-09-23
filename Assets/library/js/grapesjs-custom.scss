@@ -76,17 +76,33 @@ $colorWarn: $colorRed;
   background: #a7aeb4;
 }
 
-// Code and FileManager
+// Code Manager FileManager
 .gjs-btn-prim {
-  margin-top: 10px;
-  padding: 10px;
   &.gjs-btn-code-edit {
+    margin-top: 10px;
+    padding: 10px;
     background-color: $colorGreen;
     color: #fff;
   }
   &.gjs-btn-code-cancel {
+    margin-top: 10px;
+    padding: 10px;
     margin-left: 10px;
     background-color: transparent;
     display: none;
+  }
+}
+
+// FileManager
+.gjs-asset-manager {
+  .gjs-am-file-uploader > form,
+  .gjs-am-assets-cont {
+    background-color: white;
+  }
+  .gjs-am-meta {
+    padding-left: 10px;
+  }
+  .gjs-am-asset-image:hover {
+    box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
   }
 }
