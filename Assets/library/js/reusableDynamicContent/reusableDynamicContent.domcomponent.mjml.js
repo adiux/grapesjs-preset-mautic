@@ -1,9 +1,9 @@
 import ReusableDynamicContentService from './reusableDynamicContent.service';
 
-export default class ReusableDynamicContentDomComponents {
+export default class ReusableDynamicContentDomComponentsMjml {
   static addReusableDynamicContentType(editor) {
     const dc = editor.DomComponents;
-    const defaultType = dc.getType('default');
+    const defaultType = dc.getType('mjml');
     const defaultModel = defaultType.model;
     const defaultView = defaultType.view;
 
@@ -12,12 +12,15 @@ export default class ReusableDynamicContentDomComponents {
         defaults: {
           ...defaultModel.prototype.defaults,
           name: 'Reusable Dynamic Content',
-          components: `<span style="font-size: 14px;">Dynamic Content 0 </span>`,
-          // draggable: '[data-gjs-type=cell]',
+          components:
+            '<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="[\'draggable\', \'droppable\', \'editable\', \'hoverable\', \'selectable\']">Dynamic Content 0</mj-text>',
+          activeOnRender: 1,
+          activate: true,
           draggable: true,
-          droppable: false,
+          droppable: true,
           editable: true,
           stylable: true,
+          disable: true,
           attributes: {
             'data-gjs-type': 'reusable-dynamic-content',
             'data-slot': 'reusableDynamicContent',
@@ -45,14 +48,13 @@ export default class ReusableDynamicContentDomComponents {
               rdcname = option.name;
             }
           });
-          const content = `<span style="font-size: 14px;">Dynamic Content ${
+          const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">Dynamic Content ${
             this.getAttributes().rdcid
-          }<br>${rdcname}</span>`;
+          }<br>${rdcname}</mj-text>`;
           this.components(content);
         },
       },
       {
-        // Reusable Dynamic Content component detection
         isComponent(el) {
           if (el.getAttribute && el.getAttribute('data-slot') === 'reusableDynamicContent') {
             return {
@@ -65,8 +67,9 @@ export default class ReusableDynamicContentDomComponents {
     );
 
     const view = defaultView.extend({
+      tagName: 'tr',
       attributes: {
-        style: 'pointer-events: all; width: 100%;',
+        style: 'pointer-events: all; display: table; width: 100%;',
       },
       events: {
         dblclick: 'onActive',
@@ -87,6 +90,28 @@ export default class ReusableDynamicContentDomComponents {
         target.updateTrait('rdcid', {
           options,
         });
+      },
+      onRender({ el }) {
+        const target = this.model;
+        const { options } = target.getTrait('rdcid').props();
+
+        let rdcId = '';
+        let rdcName = '';
+
+        if (el.getAttribute('rdcid')) {
+          options.forEach((option) => {
+            if (Number(option.id) === Number(el.getAttribute('rdcid'))) {
+              rdcName = option.name;
+              rdcId = option.id;
+            }
+          });
+        } else {
+          rdcName = options[0].name;
+          rdcId = options[0].id;
+        }
+
+        const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">Dynamic Content ${rdcId}<br>${rdcName}</mj-text>`;
+        target.components(content);
       },
     });
 

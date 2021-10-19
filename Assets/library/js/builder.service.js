@@ -12,7 +12,7 @@ import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 // import mjmlService from '../../../../../../grapesjs-preset-mautic/src/mjml/mjml.service';
 
 import CodeModeButton from './codeMode/codeMode.button';
-import ReusableDynamicContentService from './reusableDynamicContent/reusableDynamicContent.service';
+import ReusableDynamicContent from './reusableDynamicContent/reusableDynamicContent';
 
 export default class BuilderService {
   editor;
@@ -114,9 +114,6 @@ export default class BuilderService {
     const codeModeButton = new CodeModeButton(this.editor);
     codeModeButton.addCommand();
     codeModeButton.addButton();
-    // add a reusable dynamic content component
-    const reusableDynamicContentService = new ReusableDynamicContentService(this.editor);
-    reusableDynamicContentService.init();
 
     this.setListeners();
   }
@@ -162,6 +159,11 @@ export default class BuilderService {
     // validate
     mjmlService.mjmlToHtml(components);
 
+    // create and init ReusableDynamicContent component
+    const grapesjsRDC = (editor) => {
+      const reusableDynamicContent = new ReusableDynamicContent(editor);
+      reusableDynamicContent.initMjml();
+    };
 
     this.editor = grapesjs.init({
       clearOnRender: true,
@@ -170,7 +172,7 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
-      plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic],
+      plugins: [grapesjsmjml, grapesjspostcss, grapesjsmautic, grapesjsRDC],
       pluginsOpts: {
         grapesjsmjml: {},
         grapesjsmautic: BuilderService.getMauticConf('email-mjml'),
@@ -185,11 +187,16 @@ export default class BuilderService {
   }
 
   initEmailHtml() {
-
     const components = contentService.getOriginalContentHtml().body.innerHTML;
     if (!components) {
       throw new Error('no components');
     }
+
+    // create and init ReusableDynamicContent component
+    const grapesjsRDC = (editor) => {
+      const reusableDynamicContent = new ReusableDynamicContent(editor);
+      reusableDynamicContent.init();
+    };
 
     // Launch GrapesJS with body part
     this.editor = grapesjs.init({
@@ -199,7 +206,7 @@ export default class BuilderService {
       height: '100%',
       storageManager: false,
       assetManager: this.getAssetManagerConf(),
-      plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic],
+      plugins: [grapesjsnewsletter, grapesjspostcss, grapesjsmautic, grapesjsRDC],
       pluginsOpts: {
         grapesjsnewsletter: {},
         grapesjsmautic: BuilderService.getMauticConf('email-html'),

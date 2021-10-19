@@ -17,6 +17,9 @@ export default class reusableDynamicContentBlocks {
         content: '{reusabledynamiccontent="Reusable Dynamic Content"}',
         style: { padding: '10px' },
         activeOnRender: 1,
+        attributes: {
+          'data-slot': 'reusableDynamicContent',
+        },
       },
     });
   }
