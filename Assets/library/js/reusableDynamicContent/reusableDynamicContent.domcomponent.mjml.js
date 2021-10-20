@@ -12,8 +12,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
         defaults: {
           ...defaultModel.prototype.defaults,
           name: 'Reusable Dynamic Content',
-          components:
-            '<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="[\'draggable\', \'droppable\', \'editable\', \'hoverable\', \'selectable\']">Dynamic Content 0</mj-text>',
           activeOnRender: 1,
           activate: true,
           draggable: '[data-gjs-type=mj-column], [data-gjs-type=mj-hero]',
@@ -22,7 +20,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
           stylable: true,
           disable: true,
           attributes: {
-            'data-gjs-type': 'reusable-dynamic-content',
             'data-slot': 'reusableDynamicContent',
           },
           traits: [

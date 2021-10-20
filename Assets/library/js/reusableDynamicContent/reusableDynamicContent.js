@@ -2,7 +2,8 @@ import loadCommands from './commands';
 
 import ReusableDynamicContentDomComponentsHtml from './reusableDynamicContent.domcomponent.html';
 import ReusableDynamicContentDomComponentsMjml from './reusableDynamicContent.domcomponent.mjml';
-import ReusableDynamicContentBlock from './reusableDynamicContent.block';
+import ReusableDynamicContentBlockHtml from './reusableDynamicContent.block.html';
+import ReusableDynamicContentBlockMjml from './reusableDynamicContent.block.mjml';
 
 export default class ReusableDynamicContent {
   editor;
@@ -12,18 +13,15 @@ export default class ReusableDynamicContent {
     loadCommands(this.editor);
   }
 
-  init() {
+  initHtml() {
     ReusableDynamicContentDomComponentsHtml.addReusableDynamicContentType(this.editor);
-    this.addBlock();
+    const reusableDynamicContentBlock = new ReusableDynamicContentBlockHtml(this.editor);
+    reusableDynamicContentBlock.addReusableDynamicContentBlock();
   }
 
   initMjml() {
     ReusableDynamicContentDomComponentsMjml.addReusableDynamicContentType(this.editor);
-    this.addBlock();
-  }
-
-  addBlock() {
-    const reusableDynamicContentBlock = new ReusableDynamicContentBlock(this.editor);
+    const reusableDynamicContentBlock = new ReusableDynamicContentBlockMjml(this.editor);
     reusableDynamicContentBlock.addReusableDynamicContentBlock();
   }
 }

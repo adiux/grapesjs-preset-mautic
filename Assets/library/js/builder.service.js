@@ -195,7 +195,7 @@ export default class BuilderService {
     // create and init ReusableDynamicContent component
     const grapesjsRDC = (editor) => {
       const reusableDynamicContent = new ReusableDynamicContent(editor);
-      reusableDynamicContent.init();
+      reusableDynamicContent.initHtml();
     };
 
     // Launch GrapesJS with body part
