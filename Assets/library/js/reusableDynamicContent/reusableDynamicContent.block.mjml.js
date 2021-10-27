@@ -11,13 +11,15 @@ export default class reusableDynamicContentBlockMjml {
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
       attributes: { class: 'fa fa-tag' },
       type: 'reusable-dynamic-content',
-      class: 'gjs-fonts gjs-f-b37',
-      content: `<mj-section data-slot='reusableDynamicContent'>
-                <mj-column>
-                   <mj-text>
-                   </mj-text>
-                </mj-column>
-             </mj-section>`,
+      style: { padding: '10px' },
+      // content: `<mj-section data-slot='reusableDynamicContent'>
+      //           <mj-column padding="10px">
+      //              <mj-text>
+      //              </mj-text>
+      //           </mj-column>
+      //        </mj-section>`,
+      content: `<mj-raw data-slot='reusableDynamicContent'>
+             </mj-raw>`,
     });
   }
 }

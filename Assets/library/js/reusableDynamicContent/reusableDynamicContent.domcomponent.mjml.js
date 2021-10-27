@@ -14,11 +14,10 @@ export default class ReusableDynamicContentDomComponentsMjml {
           name: 'Reusable Dynamic Content',
           activeOnRender: 1,
           activate: true,
-          draggable: '[data-gjs-type=mj-column], [data-gjs-type=mj-hero]',
+          draggable: true,
           droppable: true,
           editable: true,
           stylable: true,
-          disable: true,
           attributes: {
             'data-slot': 'reusableDynamicContent',
           },
@@ -45,10 +44,18 @@ export default class ReusableDynamicContentDomComponentsMjml {
               rdcname = option.name;
             }
           });
-          const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">Dynamic Content ${
-            this.getAttributes().rdcid
-          }<br>${rdcname}</mj-text>`;
+          const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">
+            <span style="font-size: 14px;">
+              {% TWIG_BLOCK %}{{ include('dc:${this.getAttributes().rdcid}')}}{% END_TWIG_BLOCK %}
+            </span>
+            </mj-text>`;
+
           this.components(content);
+          this.addAttributes({
+            'data-rdc-name': rdcname,
+            'data-rdc-id': this.getAttributes().rdcid,
+          });
+          this.view.onRender(this.getView());
         },
       },
       {
@@ -65,9 +72,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
 
     const view = defaultView.extend({
       tagName: 'tr',
-      attributes: {
-        style: 'pointer-events: all; display: table; width: 100%;',
-      },
       events: {
         dblclick: 'onActive',
       },
@@ -89,26 +93,15 @@ export default class ReusableDynamicContentDomComponentsMjml {
         });
       },
       onRender({ el }) {
-        const target = this.model;
-        const { options } = target.getTrait('rdcid').props();
+        const rdcid = el.getAttribute('data-rdc-id') ?? '';
+        const rdcname = el.getAttribute('data-rdc-name') ?? '';
 
-        let rdcId = '';
-        let rdcName = '';
-
-        if (el.getAttribute('rdcid')) {
-          options.forEach((option) => {
-            if (Number(option.id) === Number(el.getAttribute('rdcid'))) {
-              rdcName = option.name;
-              rdcId = option.id;
-            }
-          });
-        } else {
-          rdcName = options[0].name;
-          rdcId = options[0].id;
-        }
-
-        const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">Dynamic Content ${rdcId}<br>${rdcName}</mj-text>`;
-        target.components(content);
+        el.innerHTML = `<tr data-gjs-type="mj-text" padding="10px 25px 10px 25px" font-size="13px" line-height="22px" align="left" id="i6tc2" style="pointer-events: all; display: table; width: 100%;">
+          <td align="left" style="font-size: 0px; padding: 10px 25px; word-break: break-word; pointer-events: none;">
+            <div style="font-family: Ubuntu, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 22px; text-align: left; color: rgb(0, 0, 0); pointer-events: all;">
+              Dynamic Content ${rdcid}<br>${rdcname}
+            </div>
+          </td></tr>`;
       },
     });
 

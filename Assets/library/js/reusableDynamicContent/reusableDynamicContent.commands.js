@@ -62,11 +62,18 @@ export default class ReusableDynamicContentCommands {
     const listRDC = ReusableDynamicContentService.getDynamicContents();
 
     let activeRdc;
-    innerComponents.forEach((component) => (activeRdc = component.toHTML()));
+    innerComponents.forEach((component) => {
+      activeRdc = component.toHTML();
+    });
 
-    let idRdc = Number(activeRdc.slice(activeRdc.indexOf('-') + 1));
+    const pos = activeRdc.indexOf('dc:') + 3;
+    let idRdc = Number(activeRdc.slice(pos, pos + 1));
+
     if (idRdc === 0) {
       idRdc = listRDC[0].id;
+      options.target.addAttributes({
+        rdcid: idRdc,
+      });
     }
 
     listRDC.forEach((rdc) => {
@@ -78,16 +85,22 @@ export default class ReusableDynamicContentCommands {
     const rdcButtons = this.rdcPopup.getElementsByClassName('rdc');
     Array.from(rdcButtons).forEach((btn) => {
       btn.addEventListener('click', (event) => {
-        let content = `<span style="font-size: 14px;">Dynamic Content ${mQuery(event.target).data('id')}</span>`;
+        let content = `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:${mQuery(
+          event.target
+        ).data('id')}') }}{% END_TWIG_BLOCK %}</span>`;
         if (editor.DomComponents.getType('mjml')) {
-          content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">Dynamic Content ${mQuery(
-            event.target
-          ).data('id')}<br>${mQuery(event.target).data('name')}</mj-text>`;
+          content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">
+            <span style="font-size: 14px;">
+              {% TWIG_BLOCK %}{{ include('dc:${mQuery(event.target).data(
+                'id'
+              )}')}}{% END_TWIG_BLOCK %}
+            </span>
+            </mj-text>`;
         }
+
         options.target.components(content);
         options.target.addAttributes({
           rdcid: mQuery(event.target).data('id'),
-          rdcname: mQuery(event.target).data('name'),
         });
       });
     });

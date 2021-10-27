@@ -7,17 +7,19 @@ export default class ReusableDynamicContentDomComponents {
     const defaultModel = defaultType.model;
     const defaultView = defaultType.view;
 
+    const listRDC = ReusableDynamicContentService.getDynamicContents();
+
     const model = defaultModel.extend(
       {
         defaults: {
           ...defaultModel.prototype.defaults,
           name: 'Reusable Dynamic Content',
-          components: `<span style="font-size: 14px;">Dynamic Content 0 </span>`,
-          // draggable: '[data-gjs-type=cell]',
+          components: `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</span>`,
           draggable: true,
           droppable: false,
           editable: true,
           stylable: true,
+          style: { fontSize: '14px' },
           attributes: {
             'data-gjs-type': 'reusable-dynamic-content',
             'data-slot': 'reusableDynamicContent',
@@ -45,10 +47,15 @@ export default class ReusableDynamicContentDomComponents {
               rdcname = option.name;
             }
           });
-          const content = `<span style="font-size: 14px;">Dynamic Content ${
-            this.getAttributes().rdcid
-          }<br>${rdcname}</span>`;
+          const content = `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:${
+            this.getAttributes()['data-rdc-id']
+          }')}}{% END_TWIG_BLOCK %}</span>`;
           this.components(content);
+          this.addAttributes({
+            'data-rdc-name': rdcname,
+            'data-rdc-id': this.getAttributes().rdcid,
+          });
+          this.view.onRender(this.getView());
         },
       },
       {
@@ -77,7 +84,6 @@ export default class ReusableDynamicContentDomComponents {
       },
       init() {
         const target = this.model;
-        const listRDC = ReusableDynamicContentService.getDynamicContents();
         const options = [];
 
         listRDC.forEach((rdc) => {
@@ -88,8 +94,13 @@ export default class ReusableDynamicContentDomComponents {
           options,
         });
       },
-    });
+      onRender({ el }) {
+        let rdcid = el.getAttribute('data-rdc-id') ?? '';
+        let rdcname = el.getAttribute('data-rdc-name') ?? '';
 
+        el.innerHTML = `<span style="font-size: 14px;">Dynamic Content ${rdcid}<br>${rdcname}</span>`;
+      },
+    });
     /**
      * Add Reusable Dynamic Content component
      */
