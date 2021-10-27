@@ -108,7 +108,5 @@ export default class ReusableDynamicContentDomComponentsMjml {
       model,
       view,
     });
-
-    // editor.on(`component:create`, model => editor.runCommand('preset-mautic:reusable-dynamic-content-open', { model }));
   }
 }
