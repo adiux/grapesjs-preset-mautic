@@ -14,15 +14,21 @@ export default class ReusableDynamicContentDomComponents {
         defaults: {
           ...defaultModel.prototype.defaults,
           name: 'Reusable Dynamic Content',
-          components: `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</span>`,
           draggable: true,
           droppable: false,
           editable: true,
           stylable: true,
-          style: { fontSize: '14px' },
           attributes: {
             'data-gjs-type': 'reusable-dynamic-content',
             'data-slot': 'reusableDynamicContent',
+          },
+          style: {
+            'font-family': '"Helvetica Neue", "Helvetica"',
+            'font-size': '16px',
+            'font-weight': 500,
+            'line-height': '26px',
+            'text-align': 'left',
+            color: '#191919',
           },
           traits: [
             'id',
@@ -47,9 +53,9 @@ export default class ReusableDynamicContentDomComponents {
               rdcname = option.name;
             }
           });
-          const content = `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:${
+          const content = `{% TWIG_BLOCK %}{{ include('dc:${
             this.getAttributes()['data-rdc-id']
-          }')}}{% END_TWIG_BLOCK %}</span>`;
+          }')}}{% END_TWIG_BLOCK %}`;
           this.components(content);
           this.addAttributes({
             'data-rdc-name': rdcname,
@@ -98,7 +104,12 @@ export default class ReusableDynamicContentDomComponents {
         let rdcid = el.getAttribute('data-rdc-id') ?? '';
         let rdcname = el.getAttribute('data-rdc-name') ?? '';
 
-        el.innerHTML = `<span style="font-size: 14px;">Dynamic Content ${rdcid}<br>${rdcname}</span>`;
+        el.innerHTML = `<tr data-gjs-type="mj-text" padding="10px 25px 10px 25px" font-size="13px" line-height="22px" align="left" id="i6tc2" style="pointer-events: all; display: table; width: 100%;">
+          <td align="left" style="font-size: 0px; padding: 10px 25px; word-break: break-word; pointer-events: none;">
+            <div style="font-family: Ubuntu, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 22px; text-align: left; color: rgb(0, 0, 0); pointer-events: all;">
+              Dynamic Content ${rdcid}<br>${rdcname}
+            </div>
+          </td></tr>`;
       },
     });
     /**

@@ -12,15 +12,10 @@ export default class reusableDynamicContentBlockHtml {
       activate: true,
       select: true,
       attributes: { class: 'fa fa-tag' },
-      content: {
-        type: 'reusable-dynamic-content',
-        content: '{reusabledynamiccontent="Reusable Dynamic Content"}',
-        style: { padding: '10px' },
-        activeOnRender: 1,
-        attributes: {
-          'data-slot': 'reusableDynamicContent',
-        },
-      },
+      style: { padding: '10px' },
+      type: 'reusable-dynamic-content',
+      content: `<div data-slot='reusableDynamicContent'>{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</div>`,
+      activeOnRender: 1,
     });
   }
 }

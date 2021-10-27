@@ -12,14 +12,7 @@ export default class reusableDynamicContentBlockMjml {
       attributes: { class: 'fa fa-tag' },
       type: 'reusable-dynamic-content',
       style: { padding: '10px' },
-      // content: `<mj-section data-slot='reusableDynamicContent'>
-      //           <mj-column padding="10px">
-      //              <mj-text>
-      //              </mj-text>
-      //           </mj-column>
-      //        </mj-section>`,
-      content: `<mj-raw data-slot='reusableDynamicContent'>
-             </mj-raw>`,
+      content: `<mj-text data-slot='reusableDynamicContent'>{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</mj-text>`,
     });
   }
 }

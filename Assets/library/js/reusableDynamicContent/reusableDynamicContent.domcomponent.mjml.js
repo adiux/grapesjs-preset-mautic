@@ -14,7 +14,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
           name: 'Reusable Dynamic Content',
           activeOnRender: 1,
           activate: true,
-          draggable: true,
+          draggable: '[data-gjs-type=mj-column]',
           droppable: true,
           editable: true,
           stylable: true,
@@ -44,11 +44,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
               rdcname = option.name;
             }
           });
-          const content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">
-            <span style="font-size: 14px;">
-              {% TWIG_BLOCK %}{{ include('dc:${this.getAttributes().rdcid}')}}{% END_TWIG_BLOCK %}
-            </span>
-            </mj-text>`;
+          const content = `{% TWIG_BLOCK %}{{ include('dc:${this.getAttributes().rdcid}')}}{% END_TWIG_BLOCK %}`;
 
           this.components(content);
           this.addAttributes({
@@ -98,7 +94,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
 
         el.innerHTML = `<tr data-gjs-type="mj-text" padding="10px 25px 10px 25px" font-size="13px" line-height="22px" align="left" id="i6tc2" style="pointer-events: all; display: table; width: 100%;">
           <td align="left" style="font-size: 0px; padding: 10px 25px; word-break: break-word; pointer-events: none;">
-            <div style="font-family: Ubuntu, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 22px; text-align: left; color: rgb(0, 0, 0); pointer-events: all;">
+            <div style="font-family: Ubuntu, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 22px; text-align: left; color: rgb(0, 0, 0); pointer-events: all;">
               Dynamic Content ${rdcid}<br>${rdcname}
             </div>
           </td></tr>`;
@@ -112,5 +108,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
       model,
       view,
     });
+
+    // editor.on(`component:create`, model => editor.runCommand('preset-mautic:reusable-dynamic-content-open', { model }));
   }
 }

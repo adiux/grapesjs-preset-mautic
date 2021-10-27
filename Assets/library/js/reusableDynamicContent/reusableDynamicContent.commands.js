@@ -85,20 +85,6 @@ export default class ReusableDynamicContentCommands {
     const rdcButtons = this.rdcPopup.getElementsByClassName('rdc');
     Array.from(rdcButtons).forEach((btn) => {
       btn.addEventListener('click', (event) => {
-        let content = `<span style="font-size: 14px;">{% TWIG_BLOCK %}{{ include('dc:${mQuery(
-          event.target
-        ).data('id')}') }}{% END_TWIG_BLOCK %}</span>`;
-        if (editor.DomComponents.getType('mjml')) {
-          content = `<mj-text data-gjs-draggable="false" data-gjs-droppable="false" data-gjs-editable="false" data-gjs-hoverable="false" data-gjs-selectable="false" data-gjs-propagate="['draggable', 'droppable', 'editable', 'hoverable', 'selectable']">
-            <span style="font-size: 14px;">
-              {% TWIG_BLOCK %}{{ include('dc:${mQuery(event.target).data(
-                'id'
-              )}')}}{% END_TWIG_BLOCK %}
-            </span>
-            </mj-text>`;
-        }
-
-        options.target.components(content);
         options.target.addAttributes({
           rdcid: mQuery(event.target).data('id'),
         });
