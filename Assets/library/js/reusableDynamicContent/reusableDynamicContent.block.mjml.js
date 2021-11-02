@@ -9,10 +9,14 @@ export default class reusableDynamicContentBlockMjml {
     this.editor.BlockManager.add('reusable-dynamic-content', {
       label: Mautic.translate('grapesjsbuilder.reusableDynamicContentBlockLabel'),
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
+      activate: true,
+      select: true,
+      stylable: true,
       attributes: { class: 'fa fa-tag' },
-      type: 'reusable-dynamic-content',
       style: { padding: '10px' },
-      content: `<mj-text data-slot='reusableDynamicContent'>{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</mj-text>`,
+      type: 'reusable-dynamic-content',
+      content: `<mj-text data-slot='reusableDynamicContent'></mj-text>`,
+      activeOnRender: 1,
     });
   }
 }
