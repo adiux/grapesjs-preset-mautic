@@ -13,7 +13,7 @@
     "start-helloWorld": "parcel Demo/helloWorld/index.html",
     "start-mautic-full": "cp -r Demo/data dist && parcel Demo/mautic/full.html",
     "start-mautic": "cp -r Demo/data dist && parcel Demo/mautic/index.html",
-    "update-mautic-preset": "rm -r node_modules/grapesjs-preset-mautic && npm install mautic/grapesjs-preset-mautic#main"
+    "update-mautic-preset": "npm uninstall mautic/grapesjs-preset-mautic && npm install mautic/grapesjs-preset-mautic#main"
   },
   "repository": {
     "type": "git",
