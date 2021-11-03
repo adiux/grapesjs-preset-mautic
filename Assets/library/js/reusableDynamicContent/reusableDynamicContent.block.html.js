@@ -14,7 +14,7 @@ export default class reusableDynamicContentBlockHtml {
       attributes: { class: 'fa fa-tag' },
       style: { padding: '10px' },
       type: 'reusable-dynamic-content',
-      content: `<div data-slot='reusableDynamicContent' style="font-size: 13px;"></div>`,
+      content: `<div data-slot='reusableDynamicContent' style="font-size: 16px;"></div>`,
       activeOnRender: 1,
     });
   }

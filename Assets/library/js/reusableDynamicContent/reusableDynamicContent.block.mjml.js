@@ -13,7 +13,7 @@ export default class reusableDynamicContentBlockMjml {
       select: true,
       stylable: true,
       attributes: { class: 'fa fa-tag' },
-      style: { padding: '10px' },
+      // style: { padding: '10px' },
       type: 'reusable-dynamic-content',
       content: `<mj-text data-slot='reusableDynamicContent'></mj-text>`,
       activeOnRender: 1,

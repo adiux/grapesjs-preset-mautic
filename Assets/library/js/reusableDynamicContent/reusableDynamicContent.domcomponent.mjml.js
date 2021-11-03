@@ -17,6 +17,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
 
       elem.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
       elem.style.pointerEvents = 'all';
+      elem.closest('td').style.border = '1px dashed grey';
     };
 
     /**
@@ -62,6 +63,9 @@ export default class ReusableDynamicContentDomComponentsMjml {
             'padding-bottom',
             'container-background-color',
           ],
+          'style-default': {
+            'font-size': '16px',
+          },
           traits: [
             'id',
             'title',
@@ -128,12 +132,16 @@ export default class ReusableDynamicContentDomComponentsMjml {
         init() {
           this.listenTo(this.model, 'change:attributes:rdcid', this.render);
           this.listenTo(this.model, 'change:style', this.render);
+
+          if (!this.attr['font-size']) {
+            this.attr['font-size'] = '16px';
+          }
         },
         renderChildren() {
-          changeContent(this.el, this.getChildrenContainer());
+          changeContent(this.el, this.getChildrenContainer(), this);
         },
         onRender({ el }) {
-          changeContent(el, this.getChildrenContainer());
+          changeContent(el, this.getChildrenContainer(), this);
         },
       },
     });

@@ -6,7 +6,6 @@ export default class ReusableDynamicContentCommands {
   constructor(editor, listRDC) {
     this.editor = editor;
     this.listRDC = listRDC;
-    console.log(listRDC);
   }
 
   /**
@@ -22,7 +21,7 @@ export default class ReusableDynamicContentCommands {
 
     modal.setTitle(title);
     this.rdcPopup = ReusableDynamicContentCommands.buildReusableDynamicContentPopup();
-    this.addReusableDynamicContentItems(editor, options);
+    this.addReusableDynamicContentItems(options, modal);
     modal.setContent(this.rdcPopup);
     modal.open();
     modal.onceClose(() => {
@@ -52,18 +51,16 @@ export default class ReusableDynamicContentCommands {
    * @param editor
    * @param options
    */
-  addReusableDynamicContentItems(editor, options) {
+  addReusableDynamicContentItems(options, modal) {
     // Clean existing editor
     mQuery(this.rdcPopup).empty();
 
     const { target } = options;
-    const rdcComponent = target || editor.getSelected();
+    const rdcComponent = target || this.editor.getSelected();
     if (!rdcComponent) {
       mQuery(this.rdcPopup).append('<div>No Dynamic Content was found</div>');
       return;
     }
-
-    console.log(this.listRDC);
 
     if (!this.listRDC || this.listRDC.length === 0) {
       rdcComponent.getEl().remove();
@@ -94,6 +91,7 @@ export default class ReusableDynamicContentCommands {
         options.target.addAttributes({
           rdcid: mQuery(event.target).data('id'),
         });
+        modal.close();
       });
     });
   }
