@@ -105,11 +105,12 @@ export default class ReusableDynamicContentCommands {
   getCard(rdc, active) {
     const isActive = active ? 'active' : '';
 
-    const button = `<button id="rdc-${rdc.id}" type="button" class="btn btn-primary rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}" style="width: 98%; padding-top: 5px;">Add</button>`;
+    const button = `<button id="rdc-${rdc.id}" type="button" class="btn btn-warning rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}" style="width: 98%; padding-top: 5px;">Add</button>`;
 
     return (
       `${
-        '<div class="gjs-am-asset gjs-am-preview-cont" style="width: 31%; height: auto; margin: 5px;">\n' +
+        '<div class="gjs-am-asset gjs-am-preview-cont" style="width: 31%; height: auto; margin: 5px; border-bottom: 0px; background: #e7e8ea;\n' +
+        ' ">\n' +
         '  <div class="gjs-am-meta" style="width: 100%; padding: 5px;">\n' +
         '    <div class="card-title"> Dynamic Content '
       }${rdc.id}</div>\n` +
