@@ -138,10 +138,10 @@ export default class ReusableDynamicContentDomComponentsMjml {
           }
         },
         renderChildren() {
-          changeContent(this.el, this.getChildrenContainer(), this);
+          changeContent(this.el, this.getChildrenContainer());
         },
         onRender({ el }) {
-          changeContent(el, this.getChildrenContainer(), this);
+          changeContent(el, this.getChildrenContainer());
         },
       },
     });

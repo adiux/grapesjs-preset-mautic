@@ -26,7 +26,6 @@ export default class ReusableDynamicContentCommands {
     modal.open();
     modal.onceClose(() => {
       if (this.listRDC && !options.target.getAttributes().rdcid) {
-        console.log(this.listRDC);
         const idRdc = this.listRDC[0] && this.listRDC[0].id;
         options.target.addAttributes({
           rdcid: idRdc,
