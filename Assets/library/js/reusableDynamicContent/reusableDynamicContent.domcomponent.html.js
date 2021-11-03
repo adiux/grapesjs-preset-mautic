@@ -1,35 +1,59 @@
-import ReusableDynamicContentService from './reusableDynamicContent.service';
-
 export default class ReusableDynamicContentDomComponents {
-  static addReusableDynamicContentType(editor) {
+  static addReusableDynamicContentType(editor, listRDC) {
     const dc = editor.DomComponents;
     const defaultType = dc.getType('default');
     const defaultModel = defaultType.model;
     const defaultView = defaultType.view;
 
-    const listRDC = ReusableDynamicContentService.getDynamicContents();
+    const type = 'reusable-dynamic-content';
 
-    const model = defaultModel.extend(
-      {
+    /**
+     * Add Reusable Dynamic Content mjml component
+     */
+    dc.addType(type, {
+      isComponent(el) {
+        if (el.getAttribute && el.getAttribute('data-slot') === 'reusableDynamicContent') {
+          return {
+            type,
+          };
+        }
+        return false;
+      },
+      model: {
+        ...defaultModel,
         defaults: {
-          ...defaultModel.prototype.defaults,
           name: 'Reusable Dynamic Content',
           draggable: true,
           droppable: false,
           editable: true,
-          stylable: true,
           attributes: {
-            'data-gjs-type': 'reusable-dynamic-content',
+            'data-gjs-type': type,
             'data-slot': 'reusableDynamicContent',
           },
-          style: {
-            'font-family': '"Helvetica Neue", "Helvetica"',
-            'font-size': '16px',
-            'font-weight': 500,
-            'line-height': '26px',
-            'text-align': 'left',
-            color: '#191919',
-          },
+          stylable: [
+            'height',
+            'font-style',
+            'font-size',
+            'font-weight',
+            'font-family',
+            'color',
+            'line-height',
+            'letter-spacing',
+            'text-decoration',
+            'text-align',
+            'text-transform',
+            'padding',
+            'padding-top',
+            'padding-left',
+            'padding-right',
+            'padding-bottom',
+            'container-background-color',
+            'border',
+            'border-style',
+            'border-color',
+            'border-width',
+            'box-shadow',
+          ],
           traits: [
             'id',
             'title',
@@ -42,82 +66,59 @@ export default class ReusableDynamicContentDomComponents {
           ],
         },
         init() {
-          this.on('change:attributes:rdcid', this.handleTypeChange);
+          this.on('change:attributes:rdcid', this.onChangeRdcId);
+
+          const options = [];
+
+          listRDC.forEach((rdc) => {
+            options.push({ id: rdc.id, name: rdc.name });
+          });
+
+          this.updateTrait('rdcid', {
+            options,
+          });
         },
-        handleTypeChange() {
+        onChangeRdcId() {
+          const rdcId = this.getAttributes().rdcid;
+          let rdcName = '';
           const { options } = this.getTrait('rdcid').props();
-          let rdcname = '';
 
           options.forEach((option) => {
-            if (Number(option.id) === Number(this.getAttributes().rdcid)) {
-              rdcname = option.name;
+            if (Number(option.id) === Number(rdcId)) {
+              rdcName = option.name;
             }
           });
-          const content = `{% TWIG_BLOCK %}{{ include('dc:${
-            this.getAttributes()['data-rdc-id']
-          }')}}{% END_TWIG_BLOCK %}`;
+
+          const content = `{% TWIG_BLOCK %}{{ include('dc:${rdcId}')}}{% END_TWIG_BLOCK %}`;
+
           this.components(content);
           this.addAttributes({
-            'data-rdc-name': rdcname,
-            'data-rdc-id': this.getAttributes().rdcid,
+            'data-rdc-name': rdcName,
+            'data-rdc-id': rdcId,
           });
-          this.view.onRender(this.getView());
         },
       },
-      {
-        // Reusable Dynamic Content component detection
-        isComponent(el) {
-          if (el.getAttribute && el.getAttribute('data-slot') === 'reusableDynamicContent') {
-            return {
-              type: 'reusable-dynamic-content',
-            };
-          }
-          return false;
+      view: {
+        ...defaultView,
+        events: {
+          dblclick: 'onActive',
         },
-      }
-    );
+        onActive() {
+          const target = this.model;
+          editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
+        },
+        init() {
+          this.listenTo(this.model, 'change:attributes:rdcid', this.render);
+        },
+        onRender({ el }) {
+          const rdcId = el.getAttribute('data-rdc-id') ?? '';
+          const rdcName = el.getAttribute('data-rdc-name') ?? '';
+          const elem = el;
 
-    const view = defaultView.extend({
-      attributes: {
-        style: 'pointer-events: all; width: 100%;',
+          elem.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
+          elem.style.pointerEvents = 'all';
+        },
       },
-      events: {
-        dblclick: 'onActive',
-      },
-      onActive() {
-        const target = this.model;
-        editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
-      },
-      init() {
-        const target = this.model;
-        const options = [];
-
-        listRDC.forEach((rdc) => {
-          options.push({ id: rdc.id, name: rdc.name });
-        });
-
-        target.updateTrait('rdcid', {
-          options,
-        });
-      },
-      onRender({ el }) {
-        let rdcid = el.getAttribute('data-rdc-id') ?? '';
-        let rdcname = el.getAttribute('data-rdc-name') ?? '';
-
-        el.innerHTML = `<tr data-gjs-type="mj-text" padding="10px 25px 10px 25px" font-size="13px" line-height="22px" align="left" id="i6tc2" style="pointer-events: all; display: table; width: 100%;">
-          <td align="left" style="font-size: 0px; padding: 10px 25px; word-break: break-word; pointer-events: none;">
-            <div style="font-family: Ubuntu, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 22px; text-align: left; color: rgb(0, 0, 0); pointer-events: all;">
-              Dynamic Content ${rdcid}<br>${rdcname}
-            </div>
-          </td></tr>`;
-      },
-    });
-    /**
-     * Add Reusable Dynamic Content component
-     */
-    dc.addType('reusable-dynamic-content', {
-      model,
-      view,
     });
   }
 }

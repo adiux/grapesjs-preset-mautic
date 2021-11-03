@@ -11,8 +11,8 @@ export default class reusableDynamicContentBlockMjml {
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
       attributes: { class: 'fa fa-puzzle-piece' },
       type: 'reusable-dynamic-content',
-      style: { padding: '10px' },
-      content: `<mj-text data-slot='reusableDynamicContent'>{% TWIG_BLOCK %}{{ include('dc:0') }}{% END_TWIG_BLOCK %}</mj-text>`,
+      content: `<mj-text data-slot='reusableDynamicContent'></mj-text>`,
+      activeOnRender: 1,
     });
   }
 }

@@ -1,10 +1,11 @@
-import ReusableDynamicContentService from './reusableDynamicContent.service';
-
 export default class ReusableDynamicContentCommands {
   editor;
 
-  constructor(editor) {
+  listRDC;
+
+  constructor(editor, listRDC) {
     this.editor = editor;
+    this.listRDC = listRDC;
   }
 
   /**
@@ -17,17 +18,20 @@ export default class ReusableDynamicContentCommands {
   showReusableDynamicContentPopup(editor, sender, options) {
     const title = Mautic.translate('grapesjsbuilder.dynamicContentBlockLabel');
     const modal = editor.Modal;
-    modal.setTitle(title);
 
+    modal.setTitle(title);
     this.rdcPopup = ReusableDynamicContentCommands.buildReusableDynamicContentPopup();
-    this.addReusableDynamicContentItems(editor, options);
+    this.addReusableDynamicContentItems(options, modal);
     modal.setContent(this.rdcPopup);
-    mQuery('.gjs-mdl-content').css({
-      'min-height': '75vh',
-      'max-height': '75vh',
-      'overflow-y': 'scroll',
-    });
     modal.open();
+    modal.onceClose(() => {
+      if (this.listRDC && !options.target.getAttributes().rdcid) {
+        const idRdc = this.listRDC[0] && this.listRDC[0].id;
+        options.target.addAttributes({
+          rdcid: idRdc,
+        });
+      }
+    });
   }
 
   /**
@@ -47,39 +51,38 @@ export default class ReusableDynamicContentCommands {
    * @param editor
    * @param options
    */
-  addReusableDynamicContentItems(editor, options) {
-    const { target } = options;
-    const rdcComponent = target || editor.getSelected();
-    if (!rdcComponent) {
-      throw new Error('No RDC Components found');
-    }
-
+  addReusableDynamicContentItems(options, modal) {
     // Clean existing editor
     mQuery(this.rdcPopup).empty();
 
-    // Insert inside popup
-    const innerComponents = options.target.components();
-    const listRDC = ReusableDynamicContentService.getDynamicContents();
-
-    let activeRdc;
-    innerComponents.forEach((component) => {
-      activeRdc = component.toHTML();
-    });
-
-    const pos = activeRdc.indexOf('dc:') + 3;
-    let idRdc = Number(activeRdc.slice(pos, pos + 1));
-
-    if (idRdc === 0) {
-      idRdc = listRDC[0].id;
-      options.target.addAttributes({
-        rdcid: idRdc,
-      });
+    const { target } = options;
+    const rdcComponent = target || this.editor.getSelected();
+    if (!rdcComponent) {
+      mQuery(this.rdcPopup).append('<div>No Dynamic Content was found</div>');
+      return;
     }
 
-    listRDC.forEach((rdc) => {
-      mQuery(this.rdcPopup).append(
-        ReusableDynamicContentService.getCard(rdc, idRdc === Number(rdc.id))
-      );
+    if (!this.listRDC || this.listRDC.length === 0) {
+      rdcComponent.getEl().remove();
+      mQuery(this.rdcPopup).append('<div>No Dynamic Content was found</div>');
+      return;
+    }
+
+    mQuery(this.rdcPopup).css({
+      'min-height': '75vh',
+      'max-height': '75vh',
+      'overflow-y': 'scroll',
+    });
+
+    let activeRdc;
+    options.target.components().forEach((component) => {
+      activeRdc = component.toHTML();
+    });
+    const pos = activeRdc && activeRdc.indexOf('dc:') + 3;
+    const idRdc = pos && Number(activeRdc.slice(pos, pos + 1));
+
+    this.listRDC.forEach((rdc) => {
+      mQuery(this.rdcPopup).append(this.getCard(rdc, idRdc === Number(rdc.id)));
     });
 
     const rdcButtons = this.rdcPopup.getElementsByClassName('rdc');
@@ -88,7 +91,33 @@ export default class ReusableDynamicContentCommands {
         options.target.addAttributes({
           rdcid: mQuery(event.target).data('id'),
         });
+        modal.close();
       });
     });
+  }
+
+  /**
+   * Create a dynamic content item card for a modal window
+   *
+   * @param rdc
+   * @param active
+   */
+  getCard(rdc, active) {
+    const isActive = active ? 'active' : '';
+
+    const button = `<button id="rdc-${rdc.id}" type="button" class="btn btn-warning rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}" style="width: 98%; padding-top: 5px;">Add</button>`;
+
+    return (
+      `${
+        '<div class="gjs-am-asset gjs-am-preview-cont" style="width: 31%; height: auto; margin: 5px; border-bottom: 0px; background: #e7e8ea;\n' +
+        ' ">\n' +
+        '  <div class="gjs-am-meta" style="width: 100%; padding: 5px;">\n' +
+        '    <div class="card-title"> Dynamic Content '
+      }${rdc.id}</div>\n` +
+      `    <div class="card-title">${rdc.name}</div>\n` +
+      `    ${button}\n` +
+      `  </div>\n` +
+      `</div>`
+    );
   }
 }

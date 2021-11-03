@@ -4,23 +4,34 @@ import ReusableDynamicContentDomComponentsHtml from './reusableDynamicContent.do
 import ReusableDynamicContentDomComponentsMjml from './reusableDynamicContent.domcomponent.mjml';
 import ReusableDynamicContentBlockHtml from './reusableDynamicContent.block.html';
 import ReusableDynamicContentBlockMjml from './reusableDynamicContent.block.mjml';
+import ReusableDynamicContentService from './reusableDynamicContent.service';
 
 export default class ReusableDynamicContent {
   editor;
 
+  listRDC;
+
   constructor(editor) {
     this.editor = editor;
-    loadCommands(this.editor);
+    this.listRDC = ReusableDynamicContentService.getDynamicContents();
+
+    loadCommands(this.editor, this.listRDC);
   }
 
   initHtml() {
-    ReusableDynamicContentDomComponentsHtml.addReusableDynamicContentType(this.editor);
+    ReusableDynamicContentDomComponentsHtml.addReusableDynamicContentType(
+      this.editor,
+      this.listRDC
+    );
     const reusableDynamicContentBlock = new ReusableDynamicContentBlockHtml(this.editor);
     reusableDynamicContentBlock.addReusableDynamicContentBlock();
   }
 
   initMjml() {
-    ReusableDynamicContentDomComponentsMjml.addReusableDynamicContentType(this.editor);
+    ReusableDynamicContentDomComponentsMjml.addReusableDynamicContentType(
+      this.editor,
+      this.listRDC
+    );
     const reusableDynamicContentBlock = new ReusableDynamicContentBlockMjml(this.editor);
     reusableDynamicContentBlock.addReusableDynamicContentBlock();
   }
