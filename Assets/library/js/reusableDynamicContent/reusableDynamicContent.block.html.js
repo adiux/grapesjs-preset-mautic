@@ -11,7 +11,7 @@ export default class reusableDynamicContentBlockHtml {
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
       activate: true,
       select: true,
-      attributes: { class: 'fa fa-tag' },
+      attributes: { class: 'fa fa-puzzle-piece' },
       style: { padding: '10px' },
       type: 'reusable-dynamic-content',
       content: `<div data-slot='reusableDynamicContent' style="font-size: 16px;"></div>`,
