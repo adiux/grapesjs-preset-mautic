@@ -26,6 +26,7 @@ export default class ReusableDynamicContentCommands {
     modal.open();
     modal.onceClose(() => {
       if (this.listRDC && !options.target.getAttributes().rdcid) {
+        console.log(this.listRDC);
         const idRdc = this.listRDC[0] && this.listRDC[0].id;
         options.target.addAttributes({
           rdcid: idRdc,
@@ -108,13 +109,10 @@ export default class ReusableDynamicContentCommands {
     const button = `<button id="rdc-${rdc.id}" type="button" class="btn btn-warning rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}" style="width: 98%; padding-top: 5px;">Add</button>`;
 
     return (
-      `${
-        '<div class="gjs-am-asset gjs-am-preview-cont" style="width: 31%; height: auto; margin: 5px; border-bottom: 0px; background: #e7e8ea;\n' +
-        ' ">\n' +
-        '  <div class="gjs-am-meta" style="width: 100%; padding: 5px;">\n' +
-        '    <div class="card-title"> Dynamic Content '
-      }${rdc.id}</div>\n` +
-      `    <div class="card-title">${rdc.name}</div>\n` +
+      '<div class="gjs-am-asset gjs-am-preview-cont gjs-RDC-modal-block" >\n' +
+      '  <div class="gjs-am-meta inner">\n' +
+      `    <div class="card-title"> ${rdc.name} </div>\n` +
+      `    <div class="card-text">Dynamic Content ${rdc.id}</div>\n` +
       `    ${button}\n` +
       `  </div>\n` +
       `</div>`

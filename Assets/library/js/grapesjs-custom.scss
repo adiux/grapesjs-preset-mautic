@@ -106,3 +106,21 @@ $colorWarn: $colorRed;
     box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
   }
 }
+
+// RDC modal window
+.gjs-RDC-modal-block {
+  width: 31%;
+  height: auto;
+  margin: 5px;
+  border: 1px solid grey;
+  .inner {
+    padding: 7px;
+    width: 100%;
+    .card-title {
+      font-size: 14px;
+    }
+    .card-text {
+      font-size: 12px;
+    }
+  }
+}
