@@ -102,10 +102,16 @@ export default class ReusableDynamicContentDomComponents {
         ...defaultView,
         events: {
           dblclick: 'onActive',
+          click: 'onOpenLink',
         },
         onActive() {
           const target = this.model;
           editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
+        },
+        onOpenLink(ev) {
+          if (ev.path[0].tagName === 'A') {
+            window.open(ev.path[0].getAttribute('href'), '_blank');
+          }
         },
         init() {
           this.listenTo(this.model, 'change:attributes:rdcid', this.render);
@@ -115,8 +121,32 @@ export default class ReusableDynamicContentDomComponents {
           const rdcName = el.getAttribute('data-rdc-name') ?? '';
           const elem = el;
 
-          elem.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
-          elem.style.pointerEvents = 'all';
+          elem.innerText = '';
+
+          const link = this.createHtmlElement('a', 'pointer-events: all; color: grey;', 'edit');
+          link.href = `${mauticBaseUrl}s/dwc/edit/${rdcId}`;
+
+          const linkBlock = this.createHtmlElement(
+            'div',
+            'font-size: 13px; text-align: right; width: 100%; padding: 10px 10px 0px 0px;',
+            ''
+          );
+          linkBlock.appendChild(link);
+          elem.appendChild(linkBlock);
+
+          const contentBlock = this.createHtmlElement(
+            'div',
+            'pointer-events: all; padding: 0px 5px 5px;',
+            `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`
+          );
+          elem.appendChild(contentBlock);
+        },
+        createHtmlElement(tagName, styles, content) {
+          const elem = document.createElement(tagName);
+          elem.style.cssText = styles;
+          elem.innerHTML = content;
+
+          return elem;
         },
       },
     });

@@ -7,17 +7,37 @@ export default class ReusableDynamicContentDomComponentsMjml {
 
     const type = 'reusable-dynamic-content';
 
+    const createHtmlElement = (tagName, styles, content) => {
+      const elem = document.createElement(tagName);
+      elem.style.cssText = styles;
+      elem.innerHTML = content;
+
+      return elem;
+    };
+
     /**
      * Change view of component
      */
     const changeContent = (el, child) => {
       const rdcId = el.getAttribute('data-rdc-id') ?? '';
       const rdcName = el.getAttribute('data-rdc-name') ?? '';
-      const elem = child;
+      const elChild = child;
 
-      elem.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
-      elem.style.pointerEvents = 'all';
-      elem.closest('td').style.border = '1px dashed grey';
+      elChild.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
+      elChild.style.pointerEvents = 'all';
+      elChild.closest('td').style.border = '1px dashed grey';
+
+      const linkBlock = createHtmlElement(
+        'div',
+        'pointer-events: all; font-size: 12px; text-align: right; width: 100%;',
+        ``
+      );
+      elChild.closest('td').insertBefore(linkBlock, elChild);
+
+      const link = createHtmlElement('a', 'pointer-events: all; color:grey;', `edit`);
+      link.href = `${mauticBaseUrl}s/dwc/edit/${rdcId}`;
+      // link.style.color = '#e63312';
+      linkBlock.appendChild(link);
     };
 
     /**
@@ -124,10 +144,16 @@ export default class ReusableDynamicContentDomComponentsMjml {
         ...defaultView,
         events: {
           dblclick: 'onActive',
+          click: 'onOpenLink',
         },
         onActive() {
           const target = this.model;
           editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
+        },
+        onOpenLink(ev) {
+          if (ev.path[0].tagName === 'A') {
+            window.open(ev.path[0].getAttribute('href'), '_blank');
+          }
         },
         init() {
           this.listenTo(this.model, 'change:attributes:rdcid', this.render);
