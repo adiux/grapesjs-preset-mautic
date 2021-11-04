@@ -66,17 +66,16 @@ export default class ReusableDynamicContentDomComponents {
           ],
         },
         init() {
-          this.on('change:attributes:rdcid', this.onChangeRdcId);
-
           const options = [];
 
           listRDC.forEach((rdc) => {
             options.push({ id: rdc.id, name: rdc.name });
           });
-
           this.updateTrait('rdcid', {
             options,
           });
+
+          this.on('change:attributes:rdcid', this.onChangeRdcId);
         },
         onChangeRdcId() {
           const rdcId = this.getAttributes().rdcid;

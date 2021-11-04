@@ -15,7 +15,7 @@ export default class ReusableDynamicContent {
     this.editor = editor;
     this.listRDC = ReusableDynamicContentService.getDynamicContents();
 
-    loadCommands(this.editor, this.listRDC);
+    loadCommands(this.editor);
   }
 
   initHtml() {

@@ -3,11 +3,8 @@ import ReusableDynamicContentService from "./reusableDynamicContent.service";
 export default class ReusableDynamicContentCommands {
   editor;
 
-  listRDC;
-
-  constructor(editor, listRDC) {
+  constructor(editor) {
     this.editor = editor;
-    this.listRDC = listRDC;
   }
 
   /**
@@ -20,15 +17,16 @@ export default class ReusableDynamicContentCommands {
   showReusableDynamicContentPopup(editor, sender, options) {
     const title = Mautic.translate('grapesjsbuilder.dynamicContentBlockLabel');
     const modal = editor.Modal;
+    const listRDC = ReusableDynamicContentService.getDynamicContents();
 
     modal.setTitle(title);
     this.rdcPopup = ReusableDynamicContentCommands.buildReusableDynamicContentPopup();
-    this.addReusableDynamicContentItems(options, modal);
+    this.addReusableDynamicContentItems(options, modal, listRDC);
     modal.setContent(this.rdcPopup);
     modal.open();
     modal.onceClose(() => {
-      if (this.listRDC && !options.target.getAttributes().rdcid) {
-        const idRdc = this.listRDC[0] && this.listRDC[0].id;
+      if (listRDC && !options.target.getAttributes().rdcid) {
+        const idRdc = listRDC[0] && listRDC[0].id;
         options.target.addAttributes({
           rdcid: idRdc,
         });
@@ -53,7 +51,7 @@ export default class ReusableDynamicContentCommands {
    * @param editor
    * @param options
    */
-  addReusableDynamicContentItems(options, modal) {
+  addReusableDynamicContentItems(options, modal, listRDC) {
     // Clean existing editor
     mQuery(this.rdcPopup).empty();
 
@@ -64,7 +62,7 @@ export default class ReusableDynamicContentCommands {
       return;
     }
 
-    if (!this.listRDC || this.listRDC.length === 0) {
+    if (!listRDC || listRDC.length === 0) {
       rdcComponent.getEl().remove();
       mQuery(this.rdcPopup).append('<div>No Dynamic Content was found</div>');
       return;
@@ -83,7 +81,7 @@ export default class ReusableDynamicContentCommands {
     const pos = activeRdc && activeRdc.indexOf('dc:') + 3;
     const idRdc = pos && Number(activeRdc.slice(pos, pos + 1));
 
-    this.listRDC.forEach((rdc) => {
+    listRDC.forEach((rdc) => {
       mQuery(this.rdcPopup).append(this.getCard(rdc, idRdc === Number(rdc.id)));
     });
 
