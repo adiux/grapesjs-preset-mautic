@@ -14,7 +14,7 @@ export default class ReusableDynamicContentService {
         if (data.dynamicContents) {
           for (const item in data.dynamicContents) {
             const elem = [];
-            if (data.dynamicContents[item]) {
+            if (data.dynamicContents[item] && data.dynamicContents[item].isPublished) {
               elem.id = data.dynamicContents[item].id;
               elem.name = data.dynamicContents[item].name;
               elem.content = data.dynamicContents[item].content;

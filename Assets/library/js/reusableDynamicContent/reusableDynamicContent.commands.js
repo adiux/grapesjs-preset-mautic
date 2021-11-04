@@ -1,3 +1,5 @@
+import ReusableDynamicContentService from "./reusableDynamicContent.service";
+
 export default class ReusableDynamicContentCommands {
   editor;
 
