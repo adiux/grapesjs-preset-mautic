@@ -9,19 +9,15 @@ import ReusableDynamicContentService from './reusableDynamicContent.service';
 export default class ReusableDynamicContent {
   editor;
 
-  listRDC;
-
   constructor(editor) {
     this.editor = editor;
-    this.listRDC = ReusableDynamicContentService.getDynamicContents();
 
     loadCommands(this.editor);
   }
 
   initHtml() {
     ReusableDynamicContentDomComponentsHtml.addReusableDynamicContentType(
-      this.editor,
-      this.listRDC
+      this.editor
     );
     const reusableDynamicContentBlock = new ReusableDynamicContentBlockHtml(this.editor);
     reusableDynamicContentBlock.addReusableDynamicContentBlock();
@@ -29,8 +25,7 @@ export default class ReusableDynamicContent {
 
   initMjml() {
     ReusableDynamicContentDomComponentsMjml.addReusableDynamicContentType(
-      this.editor,
-      this.listRDC
+      this.editor
     );
     const reusableDynamicContentBlock = new ReusableDynamicContentBlockMjml(this.editor);
     reusableDynamicContentBlock.addReusableDynamicContentBlock();

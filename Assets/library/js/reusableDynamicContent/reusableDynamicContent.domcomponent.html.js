@@ -66,14 +66,7 @@ export default class ReusableDynamicContentDomComponents {
           ],
         },
         init() {
-          const options = [];
-
-          listRDC.forEach((rdc) => {
-            options.push({ id: rdc.id, name: rdc.name });
-          });
-          this.updateTrait('rdcid', {
-            options,
-          });
+          this.onUpdateTraitOptions('rdcid', listRDC);
 
           this.on('change:attributes:rdcid', this.onChangeRdcId);
         },
@@ -95,6 +88,18 @@ export default class ReusableDynamicContentDomComponents {
             'data-rdc-name': rdcName,
             'data-rdc-id': rdcId,
           });
+        },
+        onUpdateTraitOptions(traitName, list) {
+          const options = [];
+
+          if (list) {
+            list.forEach((elem) => {
+              options.push({ id: elem.id, name: elem.name });
+            });
+            this.updateTrait(traitName, {
+              options,
+            });
+          }
         },
       },
       view: {

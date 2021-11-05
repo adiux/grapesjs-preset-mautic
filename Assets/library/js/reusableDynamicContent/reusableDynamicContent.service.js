@@ -7,14 +7,14 @@ export default class ReusableDynamicContentService {
     const result = [];
 
     mQuery.ajax({
-      url: `${mauticBaseUrl}api/dynamiccontents?limit=100`,
+      url: `${mauticBaseUrl}api/dynamiccontents?limit=100&where[1][col]=isPublished&where[1][expr]=in&where[1][val]=1`,
       type: 'GET',
       async: false,
       success(data) {
         if (data.dynamicContents) {
-          for (const item in data.dynamicContents) {
+          for (const item of Object.keys(data.dynamicContents)) {
             const elem = [];
-            if (data.dynamicContents[item] && data.dynamicContents[item].isPublished) {
+            if (data.dynamicContents[item]) {
               elem.id = data.dynamicContents[item].id;
               elem.name = data.dynamicContents[item].name;
               elem.content = data.dynamicContents[item].content;

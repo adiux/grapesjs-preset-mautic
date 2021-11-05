@@ -1,11 +1,16 @@
+import ReusableDynamicContentService from './reusableDynamicContent.service';
+
 export default class ReusableDynamicContentDomComponentsMjml {
-  static addReusableDynamicContentType(editor, listRDC) {
+  static addReusableDynamicContentType(editor) {
     const dc = editor.DomComponents;
+
     const defaultType = dc.getType('mjml');
     const defaultModel = defaultType.model;
     const defaultView = defaultType.view;
 
     const type = 'reusable-dynamic-content';
+
+    const listRDC = ReusableDynamicContentService.getDynamicContents();
 
     const createHtmlElement = (tagName, styles, content) => {
       const elem = document.createElement(tagName);
@@ -98,14 +103,7 @@ export default class ReusableDynamicContentDomComponentsMjml {
           ],
         },
         init() {
-          const options = [];
-
-          listRDC.forEach((rdc) => {
-            options.push({ id: rdc.id, name: rdc.name });
-          });
-          this.updateTrait('rdcid', {
-            options,
-          });
+          this.onUpdateTraitOptions('rdcid', listRDC);
 
           this.on('change:attributes:rdcid', this.onChangeRdcId);
           this.on('change:style', this.onChangeStyle);
@@ -131,10 +129,22 @@ export default class ReusableDynamicContentDomComponentsMjml {
         },
         onChangeStyle(ev) {
           const items = Object.entries(ev.changed.style);
-          for (const item in items) {
+          for (const item of Object.keys(items)) {
             const name = items[item][0];
             this.addAttributes({
               [name]: items[item][1],
+            });
+          }
+        },
+        onUpdateTraitOptions(traitName, list) {
+          const options = [];
+
+          if (list) {
+            list.forEach((elem) => {
+              options.push({ id: elem.id, name: elem.name });
+            });
+            this.updateTrait(traitName, {
+              options,
             });
           }
         },

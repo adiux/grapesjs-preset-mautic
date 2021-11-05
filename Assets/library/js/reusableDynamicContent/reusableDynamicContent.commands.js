@@ -1,4 +1,4 @@
-import ReusableDynamicContentService from "./reusableDynamicContent.service";
+import ReusableDynamicContentService from './reusableDynamicContent.service';
 
 export default class ReusableDynamicContentCommands {
   editor;
@@ -22,6 +22,7 @@ export default class ReusableDynamicContentCommands {
     modal.setTitle(title);
     this.rdcPopup = ReusableDynamicContentCommands.buildReusableDynamicContentPopup();
     this.addReusableDynamicContentItems(options, modal, listRDC);
+    options.target.onUpdateTraitOptions('rdcid', listRDC);
     modal.setContent(this.rdcPopup);
     modal.open();
     modal.onceClose(() => {
