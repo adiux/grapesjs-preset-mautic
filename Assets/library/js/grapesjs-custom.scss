@@ -108,19 +108,53 @@ $colorWarn: $colorRed;
 }
 
 // RDC modal window
-.gjs-RDC-modal-block {
+.gjs-mdl-dc-card {
   width: 31%;
   height: auto;
-  margin: 5px;
-  border: 1px solid grey;
-  .inner {
-    padding: 7px;
-    width: 100%;
-    .card-title {
-      font-size: 14px;
-    }
-    .card-text {
-      font-size: 12px;
-    }
+  margin: 8px 5px;
+  border: 1px solid rgba(0,0,0,.2);;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%);
+  transition: all .2s ease 0s;
+  transition-property: box-shadow,color;
+  &.active {
+    box-shadow: 1px 3px 5px 0 rgb(0 0 0 / 20%);
   }
 }
+.gjs-mdl-dc-block {
+  padding: 7px;
+  width: 100%;
+}
+.gjs-mdl-dc-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.gjs-mdl-dc-col {
+  &.w-90 {
+    width: 90%;
+  }
+  &.a-end {
+    text-align: end;
+  }
+}
+.gjs-mdl-dc-title {
+  font-size: 1rem;
+}
+.gjs-mdl-dc-text {
+  font-size: 0.7rem;
+}
+.gjs-mdl-dc-btn {
+  width: 100%;
+  padding-top: 5px;
+  border-radius: 2px;
+  &:hover {
+    color: #e63312;
+  }
+}
+.gjs-mdl-dc-pn-btn {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+

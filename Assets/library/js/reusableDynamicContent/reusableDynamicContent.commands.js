@@ -49,8 +49,9 @@ export default class ReusableDynamicContentCommands {
   /**
    * Load Frame with Reusable Dynamic Content items and append to the codePopup Modal
    *
-   * @param editor
    * @param options
+   * @param modal
+   * @param listRDC
    */
   addReusableDynamicContentItems(options, modal, listRDC) {
     // Clean existing editor
@@ -75,12 +76,8 @@ export default class ReusableDynamicContentCommands {
       'overflow-y': 'scroll',
     });
 
-    let activeRdc;
-    options.target.components().forEach((component) => {
-      activeRdc = component.toHTML();
-    });
-    const pos = activeRdc && activeRdc.indexOf('dc:') + 3;
-    const idRdc = pos && Number(activeRdc.slice(pos, pos + 1));
+    const pos = options.target.getEl().getAttribute('data-rdc-id');
+    const idRdc = pos && Number(pos);
 
     listRDC.forEach((rdc) => {
       mQuery(this.rdcPopup).append(this.getCard(rdc, idRdc === Number(rdc.id)));
@@ -106,16 +103,22 @@ export default class ReusableDynamicContentCommands {
   getCard(rdc, active) {
     const isActive = active ? 'active' : '';
 
-    const button = `<button id="rdc-${rdc.id}" type="button" class="btn btn-warning rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}" style="width: 98%; padding-top: 5px;">Add</button>`;
+    const rdcUrl = `${mauticBaseUrl}s/dwc/edit/${rdc.id}`;
 
-    return (
-      '<div class="gjs-am-asset gjs-am-preview-cont gjs-RDC-modal-block" >\n' +
-      '  <div class="gjs-am-meta inner">\n' +
-      `    <div class="card-title"> ${rdc.name} </div>\n` +
-      `    <div class="card-text">Dynamic Content ${rdc.id}</div>\n` +
-      `    ${button}\n` +
-      `  </div>\n` +
-      `</div>`
-    );
+    const card = `<div class="gjs-am-asset gjs-am-preview-cont gjs-mdl-dc-card ${isActive}" >
+      <div class="gjs-mdl-dc-block">
+        <div class="gjs-mdl-dc-row">
+          <div class="gjs-mdl-dc-col w-90">
+            <p class="gjs-mdl-dc-title"> ${rdc.name} </p>
+            <p class="gjs-mdl-dc-text">Dynamic Content ${rdc.id}</p>
+          </div>
+          <div class="gjs-mdl-dc-col a-end">
+            <a href="${rdcUrl}" target="_blank"><span class="gjs-mdl-dc-pn-btn fa fa-edit"></span></a>
+          </div>
+        </div>
+        <button id="rdc-${rdc.id}" type="button" class="btn gjs-mdl-dc-btn rdc ${isActive}" data-id="${rdc.id}" data-name="${rdc.name}">Add</button>
+      </div>
+    </div>`;
+    return card;
   }
 }

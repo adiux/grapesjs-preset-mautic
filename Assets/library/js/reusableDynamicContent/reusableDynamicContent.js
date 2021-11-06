@@ -4,7 +4,6 @@ import ReusableDynamicContentDomComponentsHtml from './reusableDynamicContent.do
 import ReusableDynamicContentDomComponentsMjml from './reusableDynamicContent.domcomponent.mjml';
 import ReusableDynamicContentBlockHtml from './reusableDynamicContent.block.html';
 import ReusableDynamicContentBlockMjml from './reusableDynamicContent.block.mjml';
-import ReusableDynamicContentService from './reusableDynamicContent.service';
 
 export default class ReusableDynamicContent {
   editor;

@@ -7,7 +7,7 @@ export default class ReusableDynamicContentService {
     const result = [];
 
     mQuery.ajax({
-      url: `${mauticBaseUrl}api/dynamiccontents?limit=100&where[1][col]=isPublished&where[1][expr]=in&where[1][val]=1`,
+      url: `${mauticBaseUrl}api/dynamiccontents?limit=100&where[0][col]=isPublished&where[0][expr]=in&where[0][val]=1`,
       type: 'GET',
       async: false,
       success(data) {
