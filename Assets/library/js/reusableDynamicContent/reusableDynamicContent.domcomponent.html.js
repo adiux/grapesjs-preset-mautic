@@ -1,10 +1,6 @@
 export default class ReusableDynamicContentDomComponents {
   static addReusableDynamicContentType(editor, listRDC) {
     const dc = editor.DomComponents;
-    const defaultType = dc.getType('default');
-    const defaultModel = defaultType.model;
-    const defaultView = defaultType.view;
-
     const type = 'reusable-dynamic-content';
 
     /**
@@ -20,10 +16,9 @@ export default class ReusableDynamicContentDomComponents {
         return false;
       },
       model: {
-        ...defaultModel,
         defaults: {
           name: 'Reusable Dynamic Content',
-          draggable: true,
+          draggable: '[data-gjs-type=cell]',
           droppable: false,
           editable: true,
           attributes: {
@@ -103,45 +98,35 @@ export default class ReusableDynamicContentDomComponents {
         },
       },
       view: {
-        ...defaultView,
         events: {
           dblclick: 'onActive',
-          click: 'onOpenLink',
         },
         onActive() {
           const target = this.model;
           editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
         },
-        onOpenLink(ev) {
-          if (ev.path[0].tagName === 'A') {
-            window.open(ev.path[0].getAttribute('href'), '_blank');
-          }
-        },
         init() {
           this.listenTo(this.model, 'change:attributes:rdcid', this.render);
         },
         onRender({ el }) {
-          const rdcId = el.getAttribute('data-rdc-id') ?? '';
-          const rdcName = el.getAttribute('data-rdc-name') ?? '';
           const elem = el;
+          const rdcId = el.getAttribute('data-rdc-id') ?? '';
+          let rdcName = el.getAttribute('data-rdc-name') ?? '';
 
           elem.innerText = '';
-
-          const link = this.createHtmlElement('a', 'pointer-events: all; color: grey;', 'edit');
-          link.href = `${mauticBaseUrl}s/dwc/edit/${rdcId}`;
+          rdcName = rdcName.replace(/^\w/, (ch) => ch.toUpperCase());
 
           const linkBlock = this.createHtmlElement(
             'div',
             'font-size: 13px; text-align: right; width: 100%; padding: 10px 10px 0px 0px;',
             ''
           );
-          linkBlock.appendChild(link);
           elem.appendChild(linkBlock);
 
           const contentBlock = this.createHtmlElement(
             'div',
             'pointer-events: all; padding: 0px 5px 5px;',
-            `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`
+            `Dynamic Content ${rdcId}: ${rdcName}`
           );
           elem.appendChild(contentBlock);
         },

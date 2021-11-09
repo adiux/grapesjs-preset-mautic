@@ -110,7 +110,7 @@ export default class ReusableDynamicContentCommands {
         <div class="gjs-mdl-dc-row">
           <div class="gjs-mdl-dc-col w-90">
             <p class="gjs-mdl-dc-title"> ${rdc.name} </p>
-            <p class="gjs-mdl-dc-text">Dynamic Content ${rdc.id}</p>
+            <p class="gjs-mdl-dc-text">ID: ${rdc.id}</p>
           </div>
           <div class="gjs-mdl-dc-col a-end">
             <a href="${rdcUrl}" target="_blank"><span class="gjs-mdl-dc-pn-btn fa fa-edit"></span></a>

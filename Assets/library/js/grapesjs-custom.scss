@@ -140,9 +140,12 @@ $colorWarn: $colorRed;
 }
 .gjs-mdl-dc-title {
   font-size: 1rem;
+  &::first-letter {
+    text-transform:capitalize;
+  }
 }
 .gjs-mdl-dc-text {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 .gjs-mdl-dc-btn {
   width: 100%;

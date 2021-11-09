@@ -4,10 +4,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
   static addReusableDynamicContentType(editor) {
     const dc = editor.DomComponents;
 
-    const defaultType = dc.getType('mjml');
-    const defaultModel = defaultType.model;
-    const defaultView = defaultType.view;
-
     const type = 'reusable-dynamic-content';
 
     const listRDC = ReusableDynamicContentService.getDynamicContents();
@@ -24,11 +20,12 @@ export default class ReusableDynamicContentDomComponentsMjml {
      * Change view of component
      */
     const changeContent = (el, child) => {
-      const rdcId = el.getAttribute('data-rdc-id') ?? '';
-      const rdcName = el.getAttribute('data-rdc-name') ?? '';
       const elChild = child;
+      const rdcId = el.getAttribute('data-rdc-id') ?? '';
+      let rdcName = el.getAttribute('data-rdc-name') ?? '';
+      rdcName = rdcName.replace(/\w/, (c) => c.toUpperCase());
 
-      elChild.innerHTML = `Dynamic Content. ID: ${rdcId}. Name: ${rdcName}`;
+      elChild.innerHTML = `Dynamic Content ${rdcId}: ${rdcName}`;
       elChild.style.pointerEvents = 'all';
       elChild.closest('td').style.border = '1px dashed grey';
 
@@ -38,11 +35,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
         ``
       );
       elChild.closest('td').insertBefore(linkBlock, elChild);
-
-      const link = createHtmlElement('a', 'pointer-events: all; color:grey;', `edit`);
-      link.href = `${mauticBaseUrl}s/dwc/edit/${rdcId}`;
-      // link.style.color = '#e63312';
-      linkBlock.appendChild(link);
     };
 
     /**
@@ -60,7 +52,6 @@ export default class ReusableDynamicContentDomComponentsMjml {
         return false;
       },
       model: {
-        ...defaultModel,
         defaults: {
           name: 'Reusable Dynamic Content',
           activate: true,
@@ -150,19 +141,12 @@ export default class ReusableDynamicContentDomComponentsMjml {
         },
       },
       view: {
-        ...defaultView,
         events: {
           dblclick: 'onActive',
-          click: 'onOpenLink',
         },
         onActive() {
           const target = this.model;
           editor.runCommand('preset-mautic:reusable-dynamic-content-open', { target });
-        },
-        onOpenLink(ev) {
-          if (ev.path[0].tagName === 'A') {
-            window.open(ev.path[0].getAttribute('href'), '_blank');
-          }
         },
         init() {
           this.listenTo(this.model, 'change:attributes:rdcid', this.render);
