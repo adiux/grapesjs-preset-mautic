@@ -1,4 +1,4 @@
-export default class reusableDynamicContentBlocks {
+export default class reusableDynamicContentBlockMjml {
   editor;
 
   constructor(editor) {
@@ -9,16 +9,13 @@ export default class reusableDynamicContentBlocks {
     this.editor.BlockManager.add('reusable-dynamic-content', {
       label: Mautic.translate('grapesjsbuilder.reusableDynamicContentBlockLabel'),
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
+      attributes: { class: 'fa fa-puzzle-piece' },
       activate: true,
       select: true,
-      attributes: { class: 'fa fa-cube' },
-      content: `<mj-section background-color="#FFFFFF">
-                      <mj-column width="100%" border-radius="0 0 0 0" padding="10px">
-                         <mj-text font-family="Roboto, Helvetica, sans-serif" font-size="14px" line-height="18px" color="#616161" align="center">
-                           {% TWIG_BLOCK %}<br>{{ include('dc:4') }}<br>{% END_TWIG_BLOCK %}
-                         </mj-text>
-                      </mj-column>
-                   </mj-section>`,
+      style: { padding: '10px', width: '100%' },
+      type: 'reusable-dynamic-content',
+      content: `<mj-text data-slot='reusableDynamicContent'></mj-text>`,
+      activeOnRender: 1,
     });
   }
 }

@@ -1,4 +1,4 @@
-export default class reusableDynamicContentBlocks {
+export default class reusableDynamicContentBlockHtml {
   editor;
 
   constructor(editor) {
@@ -11,13 +11,11 @@ export default class reusableDynamicContentBlocks {
       category: Mautic.translate('grapesjsbuilder.categoryBlockLabel'),
       activate: true,
       select: true,
-      attributes: { class: 'fa fa-tag' },
-      content: {
-        type: 'reusable-dynamic-content',
-        content: '{reusabledynamiccontent="Reusable Dynamic Content"}',
-        style: { padding: '10px' },
-        activeOnRender: 1,
-      },
+      attributes: { class: 'fa fa-puzzle-piece' },
+      style: { padding: '10px' },
+      type: 'reusable-dynamic-content',
+      content: `<div data-slot='reusableDynamicContent' style="font-size: 16px;"></div>`,
+      activeOnRender: 1,
     });
   }
 }
