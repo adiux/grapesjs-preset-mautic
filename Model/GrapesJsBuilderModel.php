@@ -71,7 +71,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         $this->getRepository()->saveEntity($grapesJsBuilder);
 
         $customHtml = ArrayHelper::getValue('customHtml', $this->requestStack->getCurrentRequest()->get('emailform', []));
-        $email->setCustomHtml($customHtml);
+        $customHtml && $email->setCustomHtml($customHtml);
         $this->emailModel->getRepository()->saveEntity($email);
     }
 
