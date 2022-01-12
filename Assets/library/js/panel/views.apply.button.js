@@ -1,6 +1,6 @@
-import ViewsSaveCommand from './views.save.command';
+import ViewsApplyCommand from './views.apply.command';
 
-export default class ViewsSaveButton {
+export default class ViewsApplyButton {
   editor;
 
   /**
@@ -18,14 +18,14 @@ export default class ViewsSaveButton {
 
     this.editor.Panels.addButton('views', [
       {
-        id: 'views-save',
-        className: 'fa fa-floppy-o icon-blank btn-views-save',
+        id: 'views-apply',
+        className: 'fa fa-check btn-views-apply',
         active: false,
         attributes: {
-          title: Mautic.translate('grapesjsbuilder.panelsViewsButtonsSaveTitle'),
+          title: Mautic.translate('grapesjsbuilder.panelsViewsButtonsApplyTitle'),
         },
-        command: ViewsSaveCommand.name,
-        context: 'views-save',
+        command: ViewsApplyCommand.name,
+        context: 'views-apply',
       },
       removedBtn,
     ]);

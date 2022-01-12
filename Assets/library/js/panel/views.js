@@ -1,5 +1,5 @@
 import loadCommands from './commands';
-import ViewsSaveButton from './views.save.button';
+import ViewsApplyButton from './views.apply.button';
 
 export default class Views {
   editor;
@@ -11,6 +11,6 @@ export default class Views {
   }
 
   update() {
-    new ViewsSaveButton(this.editor).add();
+    new ViewsApplyButton(this.editor).add();
   }
 }

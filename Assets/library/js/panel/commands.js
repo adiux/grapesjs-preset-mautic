@@ -1,7 +1,7 @@
-import ViewsSaveCommand from './views.save.command';
+import ViewsApplyCommand from './views.apply.command';
 
 export default (editor) => {
-  editor.Commands.add(ViewsSaveCommand.name, {
-    run: ViewsSaveCommand.saveEmail,
+  editor.Commands.add(ViewsApplyCommand.name, {
+    run: ViewsApplyCommand.applyEmail,
   });
 };

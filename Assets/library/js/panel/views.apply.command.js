@@ -1,17 +1,17 @@
 import ContentService from 'grapesjs-preset-mautic/dist/content.service';
 import MjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 
-export default class ViewsSaveCommand {
+export default class ViewsApplyCommand {
   /**
    * The command to run on button click
    */
-  static name = 'preset-mautic:save-email';
+  static name = 'preset-mautic:apply-email';
 
-  static saveEmail(editor, sender) {
+  static applyEmail(editor, sender) {
     let content;
 
     const form = mQuery('form[name=emailform]');
-    const btnViewsSave = mQuery('.btn-views-save');
+    const btnViewsApply = mQuery('.btn-views-apply');
 
     const getEmailName = () => `E-Mail ${moment().format('YYYY-MM-D hh:mm:ss')}`;
 
@@ -22,7 +22,7 @@ export default class ViewsSaveCommand {
     };
 
     setTimeout(() => {
-      Mautic.activateButtonLoadingIndicator(btnViewsSave);
+      Mautic.activateButtonLoadingIndicator(btnViewsApply);
     }, 300);
 
     if (ContentService.isMjmlMode(editor)) {
@@ -87,7 +87,7 @@ export default class ViewsSaveCommand {
     Mautic.inBuilderSubmissionOff();
 
     setTimeout(() => {
-      Mautic.removeButtonLoadingIndicator(btnViewsSave);
+      Mautic.removeButtonLoadingIndicator(btnViewsApply);
       sender.attributes.active = false;
     }, 1000);
   }
