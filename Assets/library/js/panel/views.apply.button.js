@@ -1,4 +1,5 @@
 import ViewsApplyCommand from './views.apply.command';
+import ViewsApplyService from './views.apply.service';
 
 export default class ViewsApplyButton {
   editor;
@@ -7,19 +8,26 @@ export default class ViewsApplyButton {
    * Add save button before close button
    */
   constructor(editor) {
-    if (!editor) {
-      throw new Error('no editor');
-    }
     this.editor = editor;
   }
 
   add() {
+    const emailFormList = ViewsApplyService.getEmailFormList();
+    const emailType = ViewsApplyService.getEmailType();
+
     const removedBtn = this.editor.Panels.removeButton('views', 'close');
+    const emailTypeSegment = 'list';
+
+    let disabled = '';
+
+    if (emailType.val() === emailTypeSegment && !emailFormList.val().length) {
+      disabled = ' disabled';
+    }
 
     this.editor.Panels.addButton('views', [
       {
         id: 'views-apply',
-        className: 'fa fa-check btn-views-apply',
+        className: `fa fa-check btn-views-apply${disabled}`,
         active: false,
         attributes: {
           title: Mautic.translate('grapesjsbuilder.panelsViewsButtonsApplyTitle'),
