@@ -1,5 +1,4 @@
 import ViewsApplyCommand from './views.apply.command';
-import ViewsApplyService from './views.apply.service';
 
 export default class ViewsApplyButton {
   editor;
@@ -12,8 +11,8 @@ export default class ViewsApplyButton {
   }
 
   add() {
-    const emailFormList = ViewsApplyService.getEmailFormList();
-    const emailType = ViewsApplyService.getEmailType();
+    const emailFormList = this.getEmailFormList();
+    const emailType = this.getEmailType();
 
     const removedBtn = this.editor.Panels.removeButton('views', 'close');
     const emailTypeSegment = 'list';
@@ -37,5 +36,13 @@ export default class ViewsApplyButton {
       },
       removedBtn,
     ]);
+  }
+
+  getEmailFormList() {
+    return mQuery('#emailform_lists');
+  }
+
+  getEmailType() {
+    return mQuery('#emailform_emailType');
   }
 }
