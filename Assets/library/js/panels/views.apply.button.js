@@ -11,38 +11,43 @@ export default class ViewsApplyButton {
   }
 
   add() {
-    const emailFormList = this.getEmailFormList();
-    const emailType = this.getEmailType();
+    const emailFormList = ViewsApplyButton.getEmailFormList();
+    const emailType = ViewsApplyButton.getEmailType();
 
     const removedBtn = this.editor.Panels.removeButton('views', 'close');
     const emailTypeSegment = 'list';
 
+    let title = Mautic.translate('grapesjsbuilder.panelsViewsButtonsApplyTitle');
     let disabled = '';
+    let command = ViewsApplyCommand.name;
 
     if (emailType.val() === emailTypeSegment && !emailFormList.val().length) {
+      title = Mautic.translate('grapesjsbuilder.panelsViewsButtonsApplyTitleError');
       disabled = ' disabled';
+      command = '';
     }
 
     this.editor.Panels.addButton('views', [
       {
         id: 'views-apply',
-        className: `fa fa-check btn-views-apply${disabled}`,
+        className: `fa fa-check ${disabled}`,
         active: false,
         attributes: {
-          title: Mautic.translate('grapesjsbuilder.panelsViewsButtonsApplyTitle'),
+          id: 'btn-views-apply',
+          title,
         },
-        command: ViewsApplyCommand.name,
+        command,
         context: 'views-apply',
       },
       removedBtn,
     ]);
   }
 
-  getEmailFormList() {
+  static getEmailFormList() {
     return mQuery('#emailform_lists');
   }
 
-  getEmailType() {
+  static getEmailType() {
     return mQuery('#emailform_emailType');
   }
 }

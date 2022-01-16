@@ -1,9 +1,11 @@
 $disabledColor: #AAAAAA;
 
-.disabled {
-  color: $disabledColor;
-  pointer-events: none;
-  &:hover {
-    color: inherit;
+#btn-views-apply {
+  &.disabled {
+    color: $disabledColor;
+    &:hover {
+      color: $disabledColor !important;
+      cursor: default;
+    }
   }
 }

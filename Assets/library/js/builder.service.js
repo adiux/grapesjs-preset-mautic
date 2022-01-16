@@ -13,7 +13,7 @@ import mjmlService from 'grapesjs-preset-mautic/dist/mjml/mjml.service';
 
 import CodeModeButton from './codeMode/codeMode.button';
 import ReusableDynamicContent from './reusableDynamicContent/reusableDynamicContent';
-import PanelViews from './panel/views';
+import PanelsViews from './panels/views';
 
 export default class BuilderService {
   editor;
@@ -116,8 +116,8 @@ export default class BuilderService {
     codeModeButton.addCommand();
     codeModeButton.addButton();
 
-    const panelViews = new PanelViews(this.editor);
-    panelViews.update();
+    const panelsViews = new PanelsViews(this.editor);
+    panelsViews.update();
 
     this.setListeners();
   }

@@ -9,14 +9,7 @@ export default class ViewsApplyCommand {
   static name = 'preset-mautic:apply-email';
 
   static applyEmail(editor, sender) {
-    const emailForm = ViewsApplyCommand.getEmailForm();
-    const emailFormSubject = ViewsApplyCommand.getEmailFormSubject();
-    const emailFormName = ViewsApplyCommand.getEmailFormName();
-    const btnViewsApply = ViewsApplyCommand.getBtnViewsApply();
-
-    setTimeout(() => {
-      ViewsApplyCommand.activateButtonLoadingIndicator(btnViewsApply, true);
-    }, 300);
+    const applyBtnObject = sender;
 
     const mode = ContentService.getMode(editor);
     editor.runCommand('preset-mautic:dynamic-content-components-to-tokens');
@@ -45,6 +38,21 @@ export default class ViewsApplyCommand {
       ButtonCloseCommands.returnContentToTextarea(editor, htmlCode, mjmlCode);
     }
 
+    ViewsApplyCommand.applyForm(editor);
+
+    applyBtnObject.attributes.active = false;
+  }
+
+  static applyForm(editor) {
+    const btnViewsApply = ViewsApplyCommand.getBtnViewsApply();
+    const emailForm = ViewsApplyCommand.getEmailForm();
+    const emailFormSubject = ViewsApplyCommand.getEmailFormSubject();
+    const emailFormName = ViewsApplyCommand.getEmailFormName();
+
+    setTimeout(() => {
+      Mautic.activateButtonLoadingIndicator(btnViewsApply);
+    }, 300);
+
     if (emailFormSubject.val() === '') {
       emailFormSubject.val(ViewsApplyCommand.getDefaultEmailName());
     }
@@ -52,23 +60,6 @@ export default class ViewsApplyCommand {
       emailFormName.val(ViewsApplyCommand.getDefaultEmailName());
     }
 
-    ViewsApplyCommand.applyForm(editor, emailForm);
-
-    setTimeout(() => {
-      ViewsApplyCommand.activateButtonLoadingIndicator(btnViewsApply, false);
-      sender.attributes.active = false;
-    }, 1000);
-  }
-
-  static activateButtonLoadingIndicator(btn, isActive) {
-    if (isActive) {
-      Mautic.activateButtonLoadingIndicator(btn);
-    } else {
-      Mautic.removeButtonLoadingIndicator(btn);
-    }
-  }
-
-  static applyForm(editor, emailForm) {
     Mautic.inBuilderSubmissionOn(emailForm);
     Mautic.postForm(emailForm, (response) => {
       if (response.validationError !== null) {
@@ -91,12 +82,35 @@ export default class ViewsApplyCommand {
       }
     });
     Mautic.inBuilderSubmissionOff();
+
+    setTimeout(() => {
+      Mautic.removeButtonLoadingIndicator(btnViewsApply);
+    }, 1000);
   }
 
   static showModal(editor, title, text) {
     const modal = editor.Modal;
-    modal.setTitle(title);
-    modal.setContent(text);
+    modal.setTitle(`<h4 class="text-danger">${title}</h4>`);
+
+    const body = document.createElement('div');
+    const content = document.createElement('div');
+    const footer = document.createElement('div');
+    const btnClose = document.createElement('button');
+
+    content.classList.add('panel-body');
+    content.innerText = text;
+    body.appendChild(content);
+
+    btnClose.classList.add('btn', 'btn-lg', 'btn-default', 'text-primary');
+    btnClose.innerText = 'Close';
+    btnClose.onclick = () => {
+      modal.close();
+    };
+    footer.classList.add('panel-footer', 'text-center');
+    footer.appendChild(btnClose);
+    body.appendChild(footer);
+
+    modal.setContent(body);
     modal.open({
       attributes: {
         class: 'modal-content',
@@ -117,7 +131,7 @@ export default class ViewsApplyCommand {
   }
 
   static getBtnViewsApply() {
-    return mQuery('.btn-views-apply');
+    return mQuery('#btn-views-apply');
   }
 
   static getEmailFormList() {
