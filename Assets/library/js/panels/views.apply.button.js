@@ -11,8 +11,9 @@ export default class ViewsApplyButton {
   }
 
   add() {
-    const emailFormList = ViewsApplyButton.getEmailFormList();
-    const emailType = ViewsApplyButton.getEmailType();
+    const emailForm = ViewsApplyButton.getEmailForm();
+    const emailFormList = ViewsApplyButton.getEmailFormList(emailForm);
+    const emailType = ViewsApplyButton.getEmailType(emailForm);
 
     const removedBtn = this.editor.Panels.removeButton('views', 'close');
     const emailTypeSegment = 'list';
@@ -43,11 +44,15 @@ export default class ViewsApplyButton {
     ]);
   }
 
-  static getEmailFormList() {
-    return mQuery('#emailform_lists');
+  static getEmailForm() {
+    return mQuery('form[name=emailform]');
   }
 
-  static getEmailType() {
-    return mQuery('#emailform_emailType');
+  static getEmailFormList(emailForm) {
+    return emailForm.find('#emailform_lists');
+  }
+
+  static getEmailType(emailForm) {
+    return emailForm.find('#emailform_emailType');
   }
 }

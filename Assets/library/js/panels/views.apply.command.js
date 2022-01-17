@@ -9,8 +9,6 @@ export default class ViewsApplyCommand {
   static name = 'preset-mautic:apply-email';
 
   static applyEmail(editor, sender) {
-    const applyBtnObject = sender;
-
     const mode = ContentService.getMode(editor);
     editor.runCommand('preset-mautic:dynamic-content-components-to-tokens');
 
@@ -38,21 +36,16 @@ export default class ViewsApplyCommand {
       ButtonCloseCommands.returnContentToTextarea(editor, htmlCode, mjmlCode);
     }
 
-    ViewsApplyCommand.applyForm(editor);
-
-    applyBtnObject.attributes.active = false;
+    ViewsApplyCommand.applyForm(editor, sender);
   }
 
-  static applyForm(editor) {
-    const btnViewsApply = ViewsApplyCommand.getBtnViewsApply();
+  static applyForm(editor, sender) {
     const emailForm = ViewsApplyCommand.getEmailForm();
-    const emailFormSubject = ViewsApplyCommand.getEmailFormSubject();
-    const emailFormName = ViewsApplyCommand.getEmailFormName();
 
-    setTimeout(() => {
-      Mautic.activateButtonLoadingIndicator(btnViewsApply);
-    }, 300);
+    const emailFormSubject = ViewsApplyCommand.getEmailFormSubject(emailForm);
+    const emailFormName = ViewsApplyCommand.getEmailFormName(emailForm);
 
+    sender.set('disable', true);
     if (emailFormSubject.val() === '') {
       emailFormSubject.val(ViewsApplyCommand.getDefaultEmailName());
     }
@@ -80,12 +73,9 @@ export default class ViewsApplyCommand {
           emailForm[0].action = emailForm[0].baseURI;
         }
       }
+      sender.set('disable', false);
     });
     Mautic.inBuilderSubmissionOff();
-
-    setTimeout(() => {
-      Mautic.removeButtonLoadingIndicator(btnViewsApply);
-    }, 1000);
   }
 
   static showModal(editor, title, text) {
@@ -118,28 +108,28 @@ export default class ViewsApplyCommand {
     });
   }
 
-  static getEmailForm() {
-    return mQuery('form[name=emailform]');
-  }
-
-  static getEmailFormSubject() {
-    return mQuery('#emailform_subject');
-  }
-
-  static getEmailFormName() {
-    return mQuery('#emailform_name');
-  }
-
   static getBtnViewsApply() {
     return mQuery('#btn-views-apply');
   }
 
-  static getEmailFormList() {
-    return mQuery('#emailform_lists');
+  static getEmailForm() {
+    return mQuery('form[name=emailform]');
   }
 
-  static getEmailType() {
-    return mQuery('#emailform_emailType');
+  static getEmailFormSubject(emailForm) {
+    return emailForm.find('#emailform_subject');
+  }
+
+  static getEmailFormName(emailForm) {
+    return emailForm.find('#emailform_name');
+  }
+
+  static getEmailFormList(emailForm) {
+    return emailForm.find('#emailform_lists');
+  }
+
+  static getEmailType(emailForm) {
+    return emailForm.find('#emailform_emailType');
   }
 
   static getDefaultEmailName() {
