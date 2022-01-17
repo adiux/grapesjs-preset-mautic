@@ -8,24 +8,16 @@ export default class ViewsApplyCommand {
    */
   static name = 'preset-mautic:apply-email';
 
+  /**
+   * Command saves the email into Database
+   *
+   * @param editor
+   * @param sender
+   */
   static applyEmail(editor, sender) {
-    const mode = ContentService.getMode(editor);
     editor.runCommand('preset-mautic:dynamic-content-components-to-tokens');
 
-    if (mode === ContentService.modePageHtml) {
-      const htmlDocument = ContentService.getCanvasAsHtmlDocument(editor);
-      ButtonCloseCommands.returnContentToTextarea(
-        editor,
-        ContentService.serializeHtmlDocument(htmlDocument)
-      );
-    }
-
-    if (mode === ContentService.modeEmailHtml) {
-      const html = ContentService.getEditorHtmlContent(editor);
-      ButtonCloseCommands.returnContentToTextarea(editor, html);
-    }
-
-    if (mode === ContentService.modeEmailMjml) {
+    if (ContentService.isMjmlMode(editor)) {
       const htmlCode = MjmlService.getEditorHtmlContent(editor);
       const mjmlCode = MjmlService.getEditorMjmlContent(editor);
 
@@ -34,12 +26,22 @@ export default class ViewsApplyCommand {
       }
 
       ButtonCloseCommands.returnContentToTextarea(editor, htmlCode, mjmlCode);
+    } else {
+      const html = ContentService.getEditorHtmlContent(editor);
+      ButtonCloseCommands.returnContentToTextarea(editor, html);
     }
 
-    ViewsApplyCommand.applyForm(editor, sender);
+    ViewsApplyCommand.postForm(editor, sender);
   }
 
-  static applyForm(editor, sender) {
+  /**
+   * Send POST request for sending the form, get and handle response
+   * Use the global Mautic postForm function
+   *
+   * @param editor
+   * @param sender
+   */
+  static postForm(editor, sender) {
     const emailForm = ViewsApplyCommand.getEmailForm();
 
     const emailFormSubject = ViewsApplyCommand.getEmailFormSubject(emailForm);
@@ -54,30 +56,52 @@ export default class ViewsApplyCommand {
     }
 
     Mautic.inBuilderSubmissionOn(emailForm);
-    Mautic.postForm(emailForm, (response) => {
-      if (response.validationError !== null) {
-        const title = Mautic.translate('grapesjsbuilder.panelsViewsCommandModalTitleError');
-        ViewsApplyCommand.showModal(editor, title, response.validationError);
-      } else {
-        if (response.route) {
-          // update URL in address bar
-          MauticVars.manualStateChange = false;
-          History.pushState(null, 'Mautic', response.route);
-
-          // update Title
-          Mautic.generatePageTitle(response.route);
-        }
-
-        // update form action
-        if (ViewsApplyCommand.strcmp(emailForm[0].baseURI, emailForm[0].action) !== 0) {
-          emailForm[0].action = emailForm[0].baseURI;
-        }
-      }
-      sender.set('disable', false);
-    });
+    Mautic.postForm(
+      emailForm,
+      ViewsApplyCommand.postFormResponse.bind(this, editor, sender, emailForm)
+    );
     Mautic.inBuilderSubmissionOff();
   }
 
+  /**
+   * Get and handle response
+   * Use the global Mautic functions
+   *
+   * @param editor
+   * @param sender
+   * @param emailForm
+   * @param response
+   */
+  static postFormResponse(editor, sender, emailForm, response) {
+    if (response.validationError !== null) {
+      const title = Mautic.translate('grapesjsbuilder.panelsViewsCommandModalTitleError');
+      ViewsApplyCommand.showModal(editor, title, response.validationError);
+    } else {
+      if (response.route) {
+        // update URL in address bar
+        MauticVars.manualStateChange = false;
+        History.pushState(null, 'Mautic', response.route);
+
+        // update Title
+        Mautic.generatePageTitle(response.route);
+      }
+
+      // update form action
+      if (ViewsApplyCommand.strcmp(emailForm[0].baseURI, emailForm[0].action) !== 0) {
+        emailForm[0].action = emailForm[0].baseURI;
+      }
+    }
+
+    sender.set('disable', false);
+  }
+
+  /**
+   * Create modal to show information about saving email
+   *
+   * @param editor
+   * @param title
+   * @param text
+   */
   static showModal(editor, title, text) {
     const modal = editor.Modal;
     modal.setTitle(`<h4 class="text-danger">${title}</h4>`);
