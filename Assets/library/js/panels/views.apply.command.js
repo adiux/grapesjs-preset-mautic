@@ -47,7 +47,7 @@ export default class ViewsApplyCommand {
     const emailFormSubject = ViewsApplyCommand.getEmailFormSubject(emailForm);
     const emailFormName = ViewsApplyCommand.getEmailFormName(emailForm);
 
-    sender.set('disable', true);
+    sender.set('className', 'fa fa-spinner fa-spin');
     if (emailFormSubject.val() === '') {
       emailFormSubject.val(ViewsApplyCommand.getDefaultEmailName());
     }
@@ -92,7 +92,7 @@ export default class ViewsApplyCommand {
       }
     }
 
-    sender.set('disable', false);
+    sender.set('className', 'fa fa-check');
   }
 
   /**

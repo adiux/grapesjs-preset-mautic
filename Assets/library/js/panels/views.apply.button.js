@@ -31,7 +31,7 @@ export default class ViewsApplyButton {
     this.editor.Panels.addButton('views', [
       {
         id: 'views-apply',
-        className: `fa fa-check ${disable}`,
+        className: `fa fa-check`,
         active: false,
         disable,
         attributes: {
