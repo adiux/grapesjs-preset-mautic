@@ -18,7 +18,7 @@ export default class ContentService {
      */
     static getEditorHtmlContent(editor: any): string;
     /**
-     * Serialize a HTML Document to a string
+     * Serialize a DocumentHTML Object to a <html> string
      * @param {DocumentHTML} contentDocument
      */
     static serializeHtmlDocument(contentDocument: DocumentHTML): string;
