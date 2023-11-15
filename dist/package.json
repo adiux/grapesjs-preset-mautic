@@ -1,6 +1,6 @@
 {
   "name": "grapesjs-preset-mautic",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Grapesjs Preset Mautic",
   "main": "dist/index.js",
   "repository": {
