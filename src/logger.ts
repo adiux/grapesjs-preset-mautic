@@ -1,24 +1,32 @@
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { Editor } from "grapesjs";
+
 export default class Logger {
-  constructor(editor) {
-    _defineProperty(this, "editor", void 0);
+  editor;
+
+  static namespace = 'grapesjs-preset';
+
+  static filters = ['log:debug', 'log:info', 'log:warning'];
+
+  constructor(editor: Editor) {
     if (!editor) {
       throw new Error('Editor is required');
     }
     this.editor = editor;
   }
-  debug(msg, params = {}) {
+
+  debug(msg: string, params = {}) {
     this.log(msg, params, 'debug');
   }
-  info(msg, params = {}) {
+
+  info(msg: string, params = {}) {
     this.log(msg, params, 'info');
   }
-  warning(msg, params = {}) {
+
+  warning(msg: string, params = {}) {
     this.log(msg, params, 'warning');
   }
-  error(msg, params = {}) {
+
+  error(msg: string, params = {}) {
     this.log(msg, params, 'error');
   }
 
@@ -28,14 +36,8 @@ export default class Logger {
    * @param {object} params optional params
    * @param {string} level  log level
    */
-  log(msg, params, level = 'debug') {
-    const options = {
-      ...{
-        ns: Logger.namespace,
-        level
-      },
-      ...params
-    };
+  log(msg: string, params = {}, level = 'debug') {
+    const options = { ...{ ns: Logger.namespace, level }, ...params };
     this.editor.log(msg, options);
   }
 
@@ -45,7 +47,7 @@ export default class Logger {
    */
   addListener(filter = 'log:debug') {
     // find the severity for debug, info, warning.
-    const displaySeverity = Logger.filters.findIndex(element => element === filter);
+    const displaySeverity = Logger.filters.findIndex((element) => element === filter);
 
     // severity only works with items in Logger.filters. All other filters are applied directly
     if (displaySeverity === -1) {
@@ -61,5 +63,3 @@ export default class Logger {
     }
   }
 }
-_defineProperty(Logger, "namespace", 'grapesjs-preset');
-_defineProperty(Logger, "filters", ['log:debug', 'log:info', 'log:warning']);

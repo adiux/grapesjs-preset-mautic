@@ -1,30 +1,41 @@
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { Editor } from 'grapesjs';
 import Logger from './logger';
+
+
 export default class ContentService {
-  static isMjmlMode(editor) {
+  static modeEmailHtml = 'email-html';
+
+  static modeEmailMjml = 'email-mjml';
+
+  static modePageHtml = 'page-html';
+
+  static isMjmlMode(editor: Editor) {
     if (!editor) {
       throw new Error('editor is required.');
     }
     return ContentService.getMode(editor) === ContentService.modeEmailMjml;
   }
-  static getMode(editor) {
+
+  static getMode(editor: Editor) {
     const cfg = editor.getConfig();
-    if (!cfg.pluginsOpts || !cfg.pluginsOpts.grapesjsmautic || !cfg.pluginsOpts.grapesjsmautic.mode) {
+
+    if (
+      !cfg.pluginsOpts ||
+      !cfg.pluginsOpts['grapesjsmautic'] ||
+      !cfg.pluginsOpts['grapesjsmautic']['mode']
+    ) {
       throw new Error('Wrong Mautic Grapesjs mode');
     }
-    return cfg.pluginsOpts.grapesjsmautic.mode;
+
+    return cfg.pluginsOpts['grapesjsmautic']['mode'];
   }
 
   /**
    * Get the current Canvas content as complete HTML document:
    * Combine original doctype, header, editor styles and content
-   *
-   * @param {GrapesJs Editor} editor
-   * @returns HTMLDocument
    */
-  static getCanvasAsHtmlDocument(editor) {
+  static getCanvasAsHtmlDocument(editor: Editor): Document
+   {
     const parser = new DOMParser();
     const logger = new Logger(editor);
 
@@ -32,13 +43,10 @@ export default class ContentService {
     const originalContent = ContentService.getOriginalContentHtml();
     const doctype = ContentService.serializeDoctype(originalContent.doctype);
 
-    /**
-     * Sanitize the content. This updates the originalContent variable directly
-     * (as it's passed by reference), so we don't need to re-assign anything here
-     */
-    Mautic.sanitizeHtmlBeforeSave(mQuery(originalContent));
+    ContentService.sanitize();
+
     const htmlCombined = `${doctype}<html>${editor.getHtml()}<style>${editor.getCss({
-      avoidProtected: true
+      avoidProtected: true,
     })}</style></html>`;
 
     // get a DocumentHTML from the string
@@ -47,22 +55,37 @@ export default class ContentService {
     // if no header is set on the canvas, replace it with existing from theme
     if (!htmlDocument.head.innerHTML && originalContent.head.innerHTML) {
       logger.debug('Set head based on the original content', {
-        head: originalContent.head.innerHTML
+        head: originalContent.head.innerHTML,
       });
       htmlDocument.head.innerHTML = originalContent.head.innerHTML;
     }
+
     return htmlDocument;
+  }
+
+  static sanitize(): string
+  {
+    /**
+     * Removes stuff the Builder needs for it's magic but cannot be in the HTML result. E.g for dynamic content.
+     * 
+     * This updates the originalContent variable directly
+     * (as it's passed by reference), so we don't need to re-assign anything here
+     */
+    //@ts-ignore
+    return Mautic.sanitizeHtmlBeforeSave(mQuery(originalContent));
   }
 
   /**
    * Get complete current html. Including doctype and original header.
    * @returns string
    */
-  static getEditorHtmlContent(editor) {
+  static getEditorHtmlContent(editor: Editor) {
     if (!editor) {
       throw new Error('Editor is required.');
     }
+
     const contentDocument = ContentService.getCanvasAsHtmlDocument(editor);
+
     if (!contentDocument || !contentDocument.body) {
       throw new Error('No html content found');
     }
@@ -71,25 +94,23 @@ export default class ContentService {
 
   /**
    * Serialize a DocumentHTML Object to a <html> string
-   * @param {DocumentHTML} contentDocument
    */
-  static serializeHtmlDocument(contentDocument) {
-    if (!contentDocument || !(contentDocument instanceof HTMLDocument)) {
+  static serializeHtmlDocument(contentDocument: Document) {
+    if (contentDocument === null || !(contentDocument instanceof Document)) {
       throw new Error('No Html Document');
     }
 
     // @todo add the lang parameter. E.g. <html lang="de-DE">
-    return `${ContentService.serializeDoctype(contentDocument.doctype)}<html>${contentDocument.head.outerHTML}${contentDocument.body.outerHTML}</html>`;
+    return `${ContentService.serializeDoctype(contentDocument.doctype)}<html>${
+      contentDocument.head.outerHTML
+    }${contentDocument.body.outerHTML}</html>`;
   }
 
   /**
    * Returns the correct string for valid (HTML5) doctypes, eg:
    * <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-   *
-   * @param {DocumentType}
-   * @returns string
    */
-  static serializeDoctype(doctype) {
+  static serializeDoctype(doctype: DocumentType | null): string {
     if (!doctype) {
       return '';
     }
@@ -99,11 +120,11 @@ export default class ContentService {
   /**
    * Get the selected themes original or the users last saved
    * content from the db. Loaded via Mautic PHP into the textarea.
-   * @returns HTMLDocument
    */
-  static getOriginalContentHtml() {
+  static getOriginalContentHtml(): Document {
     // Parse HTML theme/template
     const parser = new DOMParser();
+    //@ts-ignore
     const textareaHtml = mQuery('textarea.builder-html');
     const doc = parser.parseFromString(textareaHtml.val(), 'text/html');
     if (!doc.body.innerHTML || !doc.head.innerHTML) {
@@ -116,23 +137,23 @@ export default class ContentService {
    * Extract all stylesheets from the template <head>
    * @todo use DocumentHTML Styles directly
    */
-  static getStyles() {
+   getStyles() {
     const content = ContentService.getOriginalContentHtml();
+
     if (!content.head) {
       return [];
     }
     const links = content.head.querySelectorAll('link');
-    const styles = [];
+    const styles: string[] = [];
+
     if (links) {
-      links.forEach(link => {
+      links.forEach((link) => {
         if (link && link.rel === 'stylesheet') {
           styles.push(link.href);
         }
       });
     }
+
     return styles;
   }
 }
-_defineProperty(ContentService, "modeEmailHtml", 'email-html');
-_defineProperty(ContentService, "modeEmailMjml", 'email-mjml');
-_defineProperty(ContentService, "modePageHtml", 'page-html');

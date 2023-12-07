@@ -1,6 +1,6 @@
 {
   "name": "grapesjs-preset-mautic",
-  "version": "1.0.5",
+  "version": "1.0.12",
   "description": "Grapesjs Preset Mautic maintained by aivie.ch",
   "main": "dist/index.js",
   "repository": {
@@ -57,8 +57,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "grapesjs": "^0.17.29",
     "mjml": "^4.9.3",
-    "mjml-browser": "^4.9.3"
+    "mjml-browser": "^4.14.1"
+  },
+  "peerDependencies": {
+    "grapesjs": "^0.21.7"
   }
 }

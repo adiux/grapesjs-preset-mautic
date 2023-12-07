@@ -4,8 +4,9 @@ import loadCommands from './commands';
 import loadButtons from './buttons';
 import loadEvents from './events';
 import loadBlocks from './blocks';
+import { Editor  } from 'grapesjs';
 
-export default (editor, opts = {}) => {
+export default (editor: Editor, opts = {}) => {
   const am = editor.AssetManager;
 
   const config = {
@@ -17,7 +18,7 @@ export default (editor, opts = {}) => {
   };
 
   const logger = new Logger(editor);
-  logger.addListener(config.logFilter, editor);
+  logger.addListener(config.logFilter);
 
   // Extend the original `image` and add a confirm dialog before removing it
   am.addType('image', {
@@ -27,22 +28,23 @@ export default (editor, opts = {}) => {
     view: {
       // If you want to see more methods to extend check out
       // https://github.com/artf/grapesjs/blob/dev/src/asset_manager/view/AssetImageView.js
-      onRemove(e) {
+      onRemove(e: Event) {
         e.stopImmediatePropagation();
-        const { model } = this;
 
         // eslint-disable-next-line no-alert, no-restricted-globals
+        // @ts-ignore
         if (confirm(Mautic.translate('grapesjsbuilder.deleteAssetConfirmText'))) {
-          model.collection.remove(model);
+          // @ts-ignore
+          this.model.collection.remove(this.model);
         }
       },
     },
   });
 
   // Load other parts
-  loadCommands(editor, config);
-  loadComponents(editor, config);
-  loadEvents(editor, config);
+  loadCommands(editor);
+  loadComponents(editor);
+  loadEvents(editor);
   loadButtons(editor, config);
   loadBlocks(editor, config);
 };
