@@ -62,7 +62,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mjml": "^4.9.3",
-    "mjml-browser": "^4.9.3"
+    "mjml": "^4.15.3",
+    "mjml-browser": "^4.15.3"
   }
 }
