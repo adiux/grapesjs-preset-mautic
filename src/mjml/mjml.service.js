@@ -44,10 +44,10 @@ export default class MjmlService {
   /**
    * Transform MJML to HTML
    * @todo show validation errors in the UI
-   * @returns string
+   * @returns MJMLParseResults
    */
   static mjmlToHtml(mjml, endpoint = '') {
-    let html = '';
+    let html;
 
     try {
       if (typeof mjml !== 'string' || !mjml.includes('<mjml>')) {

@@ -20,9 +20,9 @@ export default class MjmlService {
     /**
      * Transform MJML to HTML
      * @todo show validation errors in the UI
-     * @returns string
+     * @returns MJMLParseResults
      */
-    static mjmlToHtml(mjml: any, endpoint?: string): string;
+    static mjmlToHtml(mjml: any, endpoint?: string): any;
     /**
      * Transform MJML to HTML via endpoint
      * @returns string
